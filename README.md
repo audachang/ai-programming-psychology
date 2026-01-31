@@ -2,19 +2,19 @@
 # Programming and AI Application in Psychology
 
 ## Basic Information
-|                    |                                                                                          |
-| ------------------ | ---------------------------------------------------------------------------------------- |
-| **Term**           | Spring 2026                                                                              |
-| **Course Code**    | NS5116                                                                                   |
-| **Classroom**      | S5-607-1                                                                                 |
-| **Credit Hours**   | 3.0                                                                                      |
-| **Class Schedule** | Thursdays : 9:00 AM – 12:00 PM                                                           |
-| **Course Teacher** | Erik Chang 張智宏                                                                        |
-| **Teacher Email**  | audachang@gmail.com                                                                      |
-| **Contact Number** | 03-4227151#65209                                                                         |
-| **Office**         | Building: Science 5, Teacher Room: 601                                                   |
-| **Office Hours**   | by appointment                                                                           |
-| **Online Course**  | [https://ncueeclass.ncu.edu.tw/course/32506](https://ncueeclass.ncu.edu.tw/course/32506) |
+|                    |                     |
+| ------------------ | ------------------- |
+| **Term**           | Fall 2026           |
+| **Course Code**    |                     |
+| **Classroom**      |                     |
+| **Credit Hours**   | 3.0                 |
+| **Class Schedule** |                     |
+| **Course Teacher** | Erik Chang 張智宏   |
+| **Teacher Email**  | audachang@gmail.com |
+| **Contact Number** |                     |
+| **Office**         |                     |
+| **Office Hours**   | by appointment      |
+| **Online Course**  |                     |
 
 ---
 
