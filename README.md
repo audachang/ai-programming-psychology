@@ -1,5 +1,5 @@
-# 電腦硬體與程式語言在行為科學實驗與大數據分析之應用
-# The Applications of Computer Hardware and Programming Languages in Behavioral Experiments and Big-Data
+# 心理學程式設計與人工智慧應用
+# Programming and AI Application in Psychology
 
 ## Basic Information
 |                    |                                                                                          |
