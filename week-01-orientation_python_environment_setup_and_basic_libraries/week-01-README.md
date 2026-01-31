@@ -12,6 +12,12 @@
 
 下載並安裝 [Miniforge](https://github.com/conda-forge/miniforge) 或 [Anaconda](https://www.anaconda.com/)。Miniforge 更為輕量且預設使用 `conda-forge` 頻道，對於 PsychoPy 的相依性支援較佳。
 
+```powershell
+
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; & "c:\Users\audachang\Dropbox\courses\NCCU\ai-programming-psychology\week-01-orientation_python_environment_setup_and_basic_libraries\install_psychopy_env.ps1"
+
+```
+
 ### 2. 建立專屬虛擬環境
 
 開啟終端機（Terminal 或 Anaconda Prompt），輸入以下指令建立一個 Python 3.10 的環境（這是目前 PsychoPy 支援度最穩定的版本）：
