@@ -30,12 +30,6 @@ pip install psychopy
 ```
 
 ---
-
-## ⚠️ 重要提醒
-
-> **事實查核 (Fact Checking)：** 安裝過程中若遇到相依性問題，請務必人工查核原始來源（如 [PsychoPy 官方文件](https://www.psychopy.org/download.html)）。
-> **關鍵決策 (Critical Decisions)：** 本建議僅供參考，AI 僅能提供選項，最終系統更改的責任與決定應由您親自承擔。
-
 ### 為什麼這個方法最穩健？
 
 1. **隔離性：** 虛擬環境確保 PsychoPy 的複雜依賴項（如 `wxPython`）不會與你系統的其他 Python 專案衝突。
