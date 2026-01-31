@@ -12,9 +12,11 @@
 
 下載並安裝 [Miniforge](https://github.com/conda-forge/miniforge) 或 [Anaconda](https://www.anaconda.com/)。Miniforge 更為輕量且預設使用 `conda-forge` 頻道，對於 PsychoPy 的相依性支援較佳。
 
+Under powershell terminal in Windows, change directory to where you save the `install_psychopy_env.ps1` file, and run the following command:
+
 ```powershell
 
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; & "c:\Users\audachang\Dropbox\courses\NCCU\ai-programming-psychology\week-01-orientation_python_environment_setup_and_basic_libraries\install_psychopy_env.ps1"
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; & install_psychopy_env.ps1
 
 ```
 
