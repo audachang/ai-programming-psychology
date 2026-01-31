@@ -1,9 +1,0 @@
-
-/textbook/
-*.pdf
-*.log
-*.tmp
-*.aux
-*.out
-__pycache__/
-.ipynb_checkpoints/
