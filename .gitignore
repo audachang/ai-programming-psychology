@@ -5,3 +5,4 @@ syllabus*.tex
 *.aux
 *.out
 *.synctex.gz
+week-*/*.html
