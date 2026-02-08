@@ -67,40 +67,54 @@ This course adopts a **Hybrid AI-Assisted Learning** model, integrating cutting-
 - **Activity:** Presenting a replication or novel experiment design built with AI assistance.
 - **Folder:** `/week-08-midterm_project_presentation`
 
-### Phase 3: Machine Learning & Modeling
+### Phase 3: Machine Learning & Modeling (AI-Tuned)
 
 #### Week 09: Machine Learning Foundations
 - **Topics:** Supervised vs. Unsupervised learning, Scikit-Learn.
+- **AI Activity:** **"The Socratic Data Scientist"** – Use AI to explain algorithmic differences (e.g., K-Means vs DBSCAN) and generate comparison code for dummy datasets.
+- **AI Skill:** **Concept-to-Code Translation** – Mapping psychological hypotheses to specific clustering algorithms.
 - **Folder:** `/week-09-machine_learning_foundations`
 
 #### Week 10: Regression & Classification in Psychology
 - **Topics:** Predicting behavioral outcomes, classifying clinical groups.
+- **AI Activity:** **"Synthetic Data Stress-Testing"** – Prompt AI to generate synthetic psychological datasets with specific statistical properties (e.g., non-linear anxiety/performance correlation) to test analysis pipelines.
+- **AI Skill:** **Data Simulation** – Validating models on known ground-truth data before applying to real subjects.
 - **Folder:** `/week-10-basic_ml_algorithms_regression_and_classification`
 
 #### Week 11: Advanced Algorithms
 - **Topics:** Random Forests, dimensionality reduction (PCA/t-SNE) for high-dimensional neural data.
+- **AI Activity:** **"The Black Box Explainer"** – Train complex models and use AI to implement XAI tools (SHAP/LIME) to visualize feature importance.
+- **AI Skill:** **Explainable AI (XAI)** – Interpreting "black box" decisions for scientific publication.
 - **Folder:** `/week-11-advanced_ml_algorithms`
 
 #### Week 12: GPU Acceleration & Custom Models
 - **Topics:** TensorFlow/PyTorch basics, GPU setup.
+- **AI Activity:** **"Error Message Forensics"** – Diagnosing and fixing common tensor shape mismatches and CUDA errors using AI assistants.
+- **AI Skill:** **AI Debugging** – Critical evaluation of AI-proposed fixes for deep learning libraries.
 - **Folder:** `/week-12-gpu_acceleration_tools`
 
 #### Week 13: Deep Learning for Neuroscience
 - **Topics:** Neural Networks, Keras, decoding neural representations.
+- **AI Activity:** **"Boilerplate to Architecture"** – Using AI to generate training loops (e.g., PyTorch Lightning) to focus human effort on architectural decisions (e.g., adapting CNNs for EEG data).
+- **AI Skill:** **Refactoring & Adaptation** – Customizing standard AI-generated models for physiological time-series.
 - **Folder:** `/week-13-deep_learning`
 
 #### Week 14: Large Language Models (LLMs) in Research
 - **Topics:** NLP, Transformers, using LLMs for qualitative analysis or stimulus generation.
+- **AI Activity:** **"LLM-as-a-Subject"** – Automating prompts to test LLMs with psychological vignettes and analyzing responses for cognitive patterns.
+- **AI Skill:** **API Automation** – Scripting batch processing for OpenAI/Anthropic APIs.
 - **Folder:** `/week-14-large_language_model`
 
-### Phase 4: Capstone
+### Phase 4: Capstone (AI-Tuned)
 
 #### Week 15: ML & AI Capstone Studio
-- **Activity:** Intensive project work with instructor and AI mentorship.
+- **Activity:** **"AI Pair Programming"** – Intensive project work with AI as a mandatory coding partner.
+- **Assessment:** Documentation of "What I asked," "What code it gave," and "How I verified it."
 - **Folder:** `/week-15-ml_and_ai_capstone_studio`
 
 #### Week 16: Final Poster Presentation
-- **Activity:** Showcase of final projects.
+- **Activity:** **"Reproducibility Challenge"** – Can an AI (fed only your methods section) reproduce your analysis graph?
+- **Theme:** **"Cyborg Science"** – Explicitly distinguishing human-led hypothesis generation from AI-led implementation.
 - **Folder:** `/week-16-final_poster_presentation`
 
 ## Licensing
