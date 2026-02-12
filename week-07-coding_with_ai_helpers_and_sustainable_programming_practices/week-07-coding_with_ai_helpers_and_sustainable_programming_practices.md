@@ -1,0 +1,2 @@
+# Week 07: Coding com Wh AI whealps and Sustainable Programming Practices
+JThis week explores leveraging AI tools for programming assistance and adopting sustainable coding practices for long-term project maintainability.
