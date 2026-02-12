@@ -83,64 +83,73 @@
 ### Week 09: Machine Learning Foundations
 **Folder:** `/week-09-machine_learning_foundations`
 
-| File                                           | Description      |
-| ---------------------------------------------- | ---------------- |
-| `01_the_machine_learning_landscape.ipynb`      | Jupyter Notebook |
-| `02_end_to_end_machine_learning_project.ipynb` | Jupyter Notebook |
-| `03_classification.ipynb`                      | Jupyter Notebook |
+| File                                           | Description                     |
+| ---------------------------------------------- | ------------------------------- |
+| `week-09-content.md`                           | **Comprehensive lecture notes** |
+| `01_the_machine_learning_landscape.ipynb`      | Jupyter Notebook                |
+| `02_end_to_end_machine_learning_project.ipynb` | Jupyter Notebook                |
+| `03_classification.ipynb`                      | Jupyter Notebook                |
 
 ### Week 10: Basic Ml Algorithms Regression And Classification
 **Folder:** `/week-10-basic_ml_algorithms_regression_and_classification`
 
-| File                               | Description      |
-| ---------------------------------- | ---------------- |
-| `04_training_linear_models.ipynb`  | Jupyter Notebook |
-| `05_support_vector_machines.ipynb` | Jupyter Notebook |
+| File                               | Description                     |
+| ---------------------------------- | ------------------------------- |
+| `week-10-content.md`               | **Comprehensive lecture notes** |
+| `04_training_linear_models.ipynb`  | Jupyter Notebook                |
+| `05_support_vector_machines.ipynb` | Jupyter Notebook                |
 
 ### Week 11: Advanced Ml Algorithms
 **Folder:** `/week-11-advanced_ml_algorithms`
 
-| File                                            | Description      |
-| ----------------------------------------------- | ---------------- |
-| `06_decision_trees.ipynb`                       | Jupyter Notebook |
-| `07_ensemble_learning_and_random_forests.ipynb` | Jupyter Notebook |
-| `08_dimensionality_reduction.ipynb`             | Jupyter Notebook |
-| `09_unsupervised_learning.ipynb`                | Jupyter Notebook |
+| File                                            | Description                     |
+| ----------------------------------------------- | ------------------------------- |
+| `week-11-content.md`                            | **Comprehensive lecture notes** |
+| `06_decision_trees.ipynb`                       | Jupyter Notebook                |
+| `07_ensemble_learning_and_random_forests.ipynb` | Jupyter Notebook                |
+| `08_dimensionality_reduction.ipynb`             | Jupyter Notebook                |
+| `09_unsupervised_learning.ipynb`                | Jupyter Notebook                |
 
 ### Week 12: Gpu Acceleration Tools
 **Folder:** `/week-12-gpu_acceleration_tools`
 
-| File                                                  | Description      |
-| ----------------------------------------------------- | ---------------- |
-| `12_custom_models_and_training_with_tensorflow.ipynb` | Jupyter Notebook |
-| `19_training_and_deploying_at_scale.ipynb`            | Jupyter Notebook |
+| File                                                  | Description                     |
+| ----------------------------------------------------- | ------------------------------- |
+| `week-12-content.md`                                  | **Comprehensive lecture notes** |
+| `12_custom_models_and_training_with_tensorflow.ipynb` | Jupyter Notebook                |
+| `19_training_and_deploying_at_scale.ipynb`            | Jupyter Notebook                |
 
 ### Week 13: Deep Learning
 **Folder:** `/week-13-deep_learning`
 
-| File                                     | Description      |
-| ---------------------------------------- | ---------------- |
-| `10_neural_nets_with_keras.ipynb`        | Jupyter Notebook |
-| `11_training_deep_neural_networks.ipynb` | Jupyter Notebook |
+| File                                     | Description                     |
+| ---------------------------------------- | ------------------------------- |
+| `week-13-content.md`                     | **Comprehensive lecture notes** |
+| `10_neural_nets_with_keras.ipynb`        | Jupyter Notebook                |
+| `11_training_deep_neural_networks.ipynb` | Jupyter Notebook                |
 
 ### Week 14: Large Language Model
 **Folder:** `/week-14-large_language_model`
 
-| File                                   | Description      |
-| -------------------------------------- | ---------------- |
-| `16_nlp_with_rnns_and_attention.ipynb` | Jupyter Notebook |
+| File                                   | Description                     |
+| -------------------------------------- | ------------------------------- |
+| `week-14-content.md`                   | **Comprehensive lecture notes** |
+| `16_nlp_with_rnns_and_attention.ipynb` | Jupyter Notebook                |
 
 ### Week 15: Ml And Ai Capstone Studio
 **Folder:** `/week-15-ml_and_ai_capstone_studio`
 
-| File                                           | Description      |
-| ---------------------------------------------- | ---------------- |
-| `02_end_to_end_machine_learning_project.ipynb` | Jupyter Notebook |
+| File                                           | Description                     |
+| ---------------------------------------------- | ------------------------------- |
+| `week-15-content.md`                           | **Comprehensive lecture notes** |
+| `02_end_to_end_machine_learning_project.ipynb` | Jupyter Notebook                |
 
 ### Week 16: Final Poster Presentation
 **Folder:** `/week-16-final_poster_presentation`
 
-*(Content to be added)*
+| File                               | Description                     |
+| ---------------------------------- | ------------------------------- |
+| `week-16-content.md`               | **Comprehensive lecture notes** |
 
 ## Licensing
 
