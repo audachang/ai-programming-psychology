@@ -1,5 +1,263 @@
-# Week 11: Advanced ML Algorithms\n# 第十一週：進階機器學習演算法\n\n> **Date 日期**: 2026/05/07  \n> **Topic 主題**: Complexity & Unsupervised Learning 複雜度與非監督式學習\n\n---\n\n## Learning Objectives 學習目標\n\n1. 理解決策樹 (Decision Trees) 的工作原理及其優缺點。\n2. 掌握隨機森林 (Random Forests) 等集成方法 (Ensemble Methods) 如何提升模型性能與穩定性。\n3. 學習主成分分析 (Principal Component Analysis, PCA) 的概念與實作，用於降維處理。\n4. 理解 K-Means 聚類 (Clustering) 演算法，用於發現資料中的隱藏群體結構。\n5. 應用 `scikit-learn` 實作上述進階機器學習演算法。\n\n---\n\n## 1. Ensemble Methods: Combining Models\n## 1. 集成方法：模型組合\n\n集成方法 (Ensemble Methods) 透過結合多個學習器的預測來提高模型的準確性、穩定性和泛化能力。\n\n### 1.1 Decision Trees 決策樹\n\n-   **定義**: 決策樹是一種樹狀結構的分類或迴歸模型，它根據特徵對資料進行一系列的二元決策，最終將資料分配到葉節點。\n-   **優點**: 直觀易懂，可視化，能處理數值和類別資料。\n-   **缺點**: 容易過度擬合 (Overfitting)，對資料中的小變化敏感。\n-   **心理學應用**: 根據一系列臨床問卷答案來預測患者的診斷類別；根據實驗中的行為反應序列判斷決策策略。\n\n```python\nimport numpy as np\nimport pandas as pd\nfrom sklearn.tree import DecisionTreeClassifier, plot_tree\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score\nimport matplotlib.pyplot as plt\n\n# Generate synthetic data\n# 生成合成資料\nnp.random.seed(0)\nX = np.random.rand(100, 2) * 10\ny = ((X[:, 0] > 5) & (X[:, 1] < 7)).astype(int) # Simple classification rule\n\n# Split data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n\n# Create and train Decision Tree Classifier\n# 建立並訓練決策樹分類器\ndt_model = DecisionTreeClassifier(max_depth=3, random_state=42) # Limit depth to avoid overfitting for demo\ndt_model.fit(X_train, y_train)\n\ny_pred_dt = dt_model.predict(X_test)\nprint(f\"Decision Tree Accuracy: {accuracy_score(y_test, y_pred_dt):.2f}\")\n\n# Visualize the decision tree (requires matplotlib)\nplt.figure(figsize=(12, 8))\nplot_tree(dt_model, filled=True, feature_names=[\'feature_A\', \'feature_B\'], class_names=[\'Class 0\', \'Class 1\'])\nplt.title(\"Decision Tree Visualization\")\n# plt.show() # Uncomment to display plot\n```\n\n### 1.2 Random Forests 隨機森林\n\n-   **定義**: 隨機森林是一種集成方法，它構建多個決策樹 (在資料的隨機子集和特徵的隨機子集上訓練)，然後將它們的預測結果進行平均 (迴歸) 或投票 (分類)。\n-   **優點**: 顯著減少決策樹過度擬合的問題，具有更高的準確性和魯棒性。\n-   **心理學應用**: 預測受試者對複雜視覺刺激的反應，其中包含多個相互作用的特徵；分析多模態數據（如行為、生理、問卷）以預測個體對治療的反應。\n\n```python\nfrom sklearn.ensemble import RandomForestClassifier\n\n# Create and train Random Forest Classifier\n# 建立並訓練隨機森林分類器\nrf_model = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=5)\nrf_model.fit(X_train, y_train)\n\ny_pred_rf = rf_model.predict(X_test)\nprint(f\"\nRandom Forest Accuracy: {accuracy_score(y_test, y_pred_rf):.2f}\")\n\n# Feature importance\n# 特徵重要性\nimportances = pd.Series(rf_model.feature_importances_, index=[\'feature_A\', \'feature_B\'])\nprint(\"Feature Importances:\\n\", importances.sort_values(ascending=False))\n```\n\n---\n\n## 2. Dimensionality Reduction: PCA 降維：主成分分析 (PCA)\n\n當資料具有大量特徵時，可能會遇到「維度災難」(Curse of Dimensionality) 的問題。降維技術旨在減少特徵數量，同時保留資料中的重要資訊。\n\n### 2.1 Principal Component Analysis (PCA) 主成分分析\n\n-   **定義**: PCA 是一種線性降維技術，它將資料轉換到一個新的坐標系中，新坐標系的軸 (主成分) 按照資料變異性的大小進行排序。第一個主成分捕獲最大的變異，第二個捕獲次大的，依此類推。\n-   **目標**: 減少特徵維度，同時最大限度地保留資料中的訊息。\n-   **心理學應用**: 分析高維度的神經影像 (fMRI) 數據，將數千個體素縮減為幾個關鍵的大腦活動模式；簡化包含大量題項的問卷資料，提取核心心理構念。\n\n```python\nfrom sklearn.decomposition import PCA\nfrom sklearn.preprocessing import StandardScaler\n\n# Generate a high-dimensional synthetic dataset (e.g., 50 features)\n# 生成高維度合成資料集（例如，50 個特徵）\nnp.random.seed(1)\nX_high_dim = np.random.rand(100, 50)\n\n# Add some correlation to features for PCA to be meaningful\n# 為特徵添加一些相關性，使 PCA 更具意義\nX_high_dim[:, 0] = X_high_dim[:, 1] * 0.8 + np.random.rand(100) * 0.2\nX_high_dim[:, 5] = X_high_dim[:, 6] * 0.9 + np.random.rand(100) * 0.1\n\n# Standardize the data before applying PCA\n# 在應用 PCA 之前對資料進行標準化\nscaler = StandardScaler()\nX_scaled = scaler.fit_transform(X_high_dim)\n\nprint(f\"Original high-dimensional data shape: {X_scaled.shape}\")\n\n# Apply PCA to reduce to 2 components for visualization\n# 應用 PCA 將維度降低到 2 個成分以便可視化\npca = PCA(n_components=2)\nX_pca = pca.fit_transform(X_scaled)\n\nprint(f\"Reduced-dimensional data shape (2 components): {X_pca.shape}\")\nprint(f\"Explained variance ratio by components: {pca.explained_variance_ratio_}\")\nprint(f\"Total explained variance: {pca.explained_variance_ratio_.sum():.2f}\")\n\n# Plotting PCA results (conceptual)\nplt.figure(figsize=(8, 6))\nplt.scatter(X_pca[:, 0], X_pca[:, 1], alpha=0.8)\nplt.xlabel(\"Principal Component 1\")\nplt.ylabel(\"Principal Component 2\")\nplt.title(\"PCA of High-Dimensional Data\")\nplt.grid(True)\n# plt.show() # Uncomment to display plot\n```\n\n---\n\n## 3. Unsupervised Learning: Clustering 學習：聚類\n\n聚類是一種非監督式學習技術，用於將資料點分組，使得同一組內的點彼此相似，而不同組的點彼此相異。\n\n### 3.1 K-Means Clustering K-Means 聚類\n\n-   **定義**: K-Means 是一種迭代演算法，它旨在將資料集劃分為 K 個預定義的、不重疊的子群體 (簇)。它隨機初始化 K 個質心 (centroids)，然後迭代地將每個資料點分配給最近的質心，並更新質心的位置，直到收斂。\n-   **心理學應用**: 從大量受試者的反應模式中識別不同的行為策略群體；將情緒圖片按照其引發的生理反應或主觀評估分組。\n\n```python\nfrom sklearn.cluster import KMeans\n\n# Generate synthetic data for clustering\n# 生成用於聚類的合成資料\nnp.random.seed(2)\nX_cluster = np.vstack([\n    np.random.normal(loc=[1, 1], scale=0.5, size=(50, 2)),\n    np.random.normal(loc=[8, 2], scale=0.8, size=(50, 2)),\n    np.random.normal(loc=[3, 9], scale=0.6, size=(50, 2))\n])\n\nprint(f\"Clustering data shape: {X_cluster.shape}\")\n\n# Apply K-Means clustering (e.g., K=3 clusters)\n# 應用 K-Means 聚類（例如，K=3 個簇）\nkmeans = KMeans(n_clusters=3, random_state=42, n_init=10) # n_init for robust initialization\nkmeans.fit(X_cluster)\n\n# Get cluster assignments for each data point\nlabels = kmeans.labels_\ncentroids = kmeans.cluster_centers_\n\nprint(\"\nCluster assignments for first 10 data points:\")\nprint(labels[:10])\nprint(\"Cluster centroids:\\n\", centroids)\n\n# Plotting clustering results (conceptual)\nplt.figure(figsize=(8, 6))\nplt.scatter(X_cluster[:, 0], X_cluster[:, 1], c=labels, cmap=\'viridis\', s=50, alpha=0.8, label=\'Data Points\')\nplt.scatter(centroids[:, 0], centroids[:, 1], c=\'red\', s=200, alpha=0.9, marker=\'X\', label=\'Centroids\')\nplt.xlabel(\"Feature 1\")\nplt.ylabel(\"Feature 2\")\nplt.title(\"K-Means Clustering Example\")\nplt.legend()\nplt.grid(True)\n# plt.show() # Uncomment to display plot\n```\n\n---\n\n## 4. Lab Activity: PCA & K-Means for Behavioral Data\n## 4. 實作活動：行為資料的 PCA 與 K-Means 聚類\n\n**目標**: 使用 PCA 降低一個高維度行為資料集的維度，然後使用 K-Means 聚類演算法識別潛在的參與者群體。
+# Week 11: Advanced ML Algorithms
+# 第十一週：進階機器學習演算法
 
-**Goal**: Use PCA to reduce the dimensionality of a high-dimensional behavioral dataset, then apply K-Means clustering to identify underlying participant groups.
+> **Date 日期**: 2026/05/07  
+> **Topic 主題**: Complexity & Unsupervised Learning 複雜度與非監督式學習
 
-### 任務 Task\n\n1.  生成一個模擬的行為資料集，包含 100 個樣本和 15 個連續特徵 (例如，不同認知測驗的分數)。\n2.  對資料進行標準化 (使用 `StandardScaler`)。\n3.  應用 PCA 將資料降維到 2 個主成分。\n4.  使用 K-Means 聚類演算法 (K=3) 對降維後的資料進行分群。\n5.  繪製降維後的資料點，並用不同的顏色標記其聚類結果。\n\n```python\nimport pandas as pd\nimport numpy as np\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.decomposition import PCA\nfrom sklearn.cluster import KMeans\nimport matplotlib.pyplot as plt\n\n# 1. Generate a synthetic high-dimensional behavioral dataset\n# 1. 生成一個合成的高維度行為資料集\nnp.random.seed(42)\nn_samples = 100\nn_features = 15\n\n# Create 3 distinct clusters within the high-dimensional space\n# 在高維度空間中創建 3 個不同的聚類\ndata_cluster1 = np.random.normal(loc=0, scale=1, size=(n_samples // 3, n_features))\ndata_cluster2 = np.random.normal(loc=5, scale=1, size=(n_samples // 3, n_features))\ndata_cluster3 = np.random.normal(loc=-5, scale=1, size=(n_samples - (2 * n_samples // 3), n_features))\nX_behavior_hd = np.vstack([data_cluster1, data_cluster2, data_cluster3])\nnp.random.shuffle(X_behavior_hd) # Shuffle to mix the clusters\n\nprint(f\"Original high-dimensional behavioral data shape: {X_behavior_hd.shape}\")\n\n# 2. Standardize the data\n# 2. 標準化資料\nscaler_lab = StandardScaler()\nX_scaled_lab = scaler_lab.fit_transform(X_behavior_hd)\n\n# 3. Apply PCA to reduce to 2 principal components\n# 3. 應用 PCA 將資料降維到 2 個主成分\npca_lab = PCA(n_components=2, random_state=42)\nX_pca_lab = pca_lab.fit_transform(X_scaled_lab)\n\nprint(f\"Reduced-dimensional data shape after PCA: {X_pca_lab.shape}\")\nprint(f\"Explained variance by 2 PCs: {pca_lab.explained_variance_ratio_.sum():.2f}\")\n\n# 4. Apply K-Means clustering (K=3) to the reduced data\n# 4. 對降維後的資料應用 K-Means 聚類（K=3）\nkmeans_lab = KMeans(n_clusters=3, random_state=42, n_init=10)\nkmeans_lab.fit(X_pca_lab)\n\ncluster_labels_lab = kmeans_lab.labels_\ncentroids_lab = kmeans_lab.cluster_centers_\n\nprint(\"\nCluster assignments (first 10):\")\nprint(cluster_labels_lab[:10])\nprint(\"Cluster centroids:\\n\", centroids_lab)\n\n# 5. Plotting the clustered data\n# 5. 繪製聚類後的資料點\nplt.figure(figsize=(10, 8))\nscatter = plt.scatter(X_pca_lab[:, 0], X_pca_lab[:, 1], c=cluster_labels_lab, cmap=\'viridis\', s=80, alpha=0.8)\nplt.scatter(centroids_lab[:, 0], centroids_lab[:, 1], c=\'red\', s=300, marker=\'X\', label=\'Centroids\')\nplt.xlabel(\"Principal Component 1\")\nplt.ylabel(\"Principal Component 2\")\nplt.title(\"PCA and K-Means Clustering of Behavioral Data\")\nplt.colorbar(scatter, label=\'Cluster Label\')\nplt.legend()\nplt.grid(True)\n# plt.show() # Uncomment to display plot\n```\n\n---\n\n## 5. References 參考資料\n\n- **Scikit-learn Decision Trees**: [https://scikit-learn.org/stable/modules/tree.html](https://scikit-learn.org/stable/modules/tree.html)\n- **Scikit-learn Random Forests**: [https://scikit-learn.org/stable/modules/ensemble.html#random-forests](https://scikit-learn.org/stable/modules/ensemble.html#random-forests)\n- **Scikit-learn PCA**: [https://scikit-learn.org/stable/modules/decomposition.html#principal-component-analysis-pca](https://scikit-learn.org/stable/modules/decomposition.html#principal-component-analysis-pca)\n- **Scikit-learn K-Means**: [https://scikit-learn.org/stable/modules/clustering.html#k-means](https://scikit-learn.org/stable/modules/clustering.html#k-means)\n- **The Elements of Statistical Learning**: Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction*. Springer.\n
+---
+
+## Learning Objectives 學習目標
+
+1. 理解**決策樹** (Decision Trees) 的運作原理與視覺化
+2. 掌握**隨機森林** (Random Forests) 與**梯度提升** (XGBoost) 等集成方法
+3. 使用 **PCA** 進行高維資料的降維與視覺化
+4. 使用 **K-Means** 聚類分析探索資料的內在結構
+
+---
+
+## 1. Decision Trees 決策樹
+
+A decision tree splits data recursively based on feature thresholds to make predictions.
+
+決策樹根據特徵閾值遞迴地分割資料以進行預測。
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
+
+# Simulate psychology data: predict cognitive decline
+# 模擬心理學資料：預測認知退化
+np.random.seed(42)
+n = 200
+data = pd.DataFrame({
+    'age': np.random.randint(40, 85, n),
+    'education_years': np.random.randint(8, 22, n),
+    'sleep_quality': np.random.uniform(1, 10, n),
+    'exercise_freq': np.random.randint(0, 7, n),
+})
+# Rule: older + less education + poor sleep → decline
+decline_prob = 1 / (1 + np.exp(-(
+    -5 + 0.08 * data['age'] 
+    - 0.15 * data['education_years'] 
+    - 0.2 * data['sleep_quality']
+)))
+data['cognitive_decline'] = (np.random.random(n) < decline_prob).astype(int)
+
+X = data.drop('cognitive_decline', axis=1)
+y = data['cognitive_decline']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train decision tree 訓練決策樹
+tree = DecisionTreeClassifier(max_depth=4, random_state=42)
+tree.fit(X_train, y_train)
+print(f"Accuracy: {accuracy_score(y_test, tree.predict(X_test)):.3f}")
+
+# Visualize the tree 視覺化決策樹
+fig, ax = plt.subplots(figsize=(16, 8))
+plot_tree(tree, feature_names=X.columns, class_names=['Healthy', 'Decline'],
+          filled=True, rounded=True, ax=ax, fontsize=9)
+plt.title('Decision Tree: Cognitive Decline Prediction')
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 2. Random Forests & Ensemble Methods
+## 2. 隨機森林與集成方法
+
+Ensemble methods combine multiple models to achieve better performance than any single model.
+
+集成方法結合多個模型，以獲得優於任何單一模型的表現。
+
+### 2.1 Random Forest 隨機森林
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+# Train random forest 訓練隨機森林
+rf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+rf.fit(X_train, y_train)
+y_pred_rf = rf.predict(X_test)
+
+print(f"Random Forest Accuracy: {accuracy_score(y_test, y_pred_rf):.3f}")
+
+# Feature importance 特徵重要性
+importances = pd.Series(rf.feature_importances_, index=X.columns)
+importances = importances.sort_values(ascending=True)
+
+fig, ax = plt.subplots(figsize=(8, 4))
+importances.plot(kind='barh', color='steelblue', ax=ax)
+ax.set_xlabel('Feature Importance')
+ax.set_title('Random Forest: Feature Importance for Cognitive Decline')
+plt.tight_layout()
+plt.show()
+```
+
+### 2.2 Gradient Boosting (XGBoost) 梯度提升
+
+```python
+# pip install xgboost
+from sklearn.ensemble import GradientBoostingClassifier
+
+gbc = GradientBoostingClassifier(
+    n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42
+)
+gbc.fit(X_train, y_train)
+y_pred_gbc = gbc.predict(X_test)
+
+print(f"Gradient Boosting Accuracy: {accuracy_score(y_test, y_pred_gbc):.3f}")
+
+# Compare all models 比較所有模型
+from sklearn.model_selection import cross_val_score
+
+models = {
+    'Decision Tree': DecisionTreeClassifier(max_depth=4, random_state=42),
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42),
+    'Gradient Boosting': GradientBoostingClassifier(n_estimators=100, random_state=42),
+}
+
+for name, model in models.items():
+    scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+    print(f"{name}: {scores.mean():.3f} ± {scores.std():.3f}")
+```
+
+---
+
+## 3. PCA — Dimensionality Reduction
+## 3. PCA — 降維
+
+PCA (Principal Component Analysis) reduces high-dimensional data to fewer dimensions while preserving maximum variance.
+
+主成分分析 (PCA) 將高維資料降至較少的維度，同時保留最大的變異。
+
+```python
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+# Simulate high-dimensional survey data (e.g., 20 personality items)
+# 模擬高維問卷資料（例如 20 題人格量表）
+np.random.seed(42)
+n_participants = 200
+n_items = 20
+
+# Generate data with 3 latent factors 產生具有 3 個潛在因子的資料
+latent = np.random.randn(n_participants, 3)
+loadings = np.random.randn(3, n_items) * 0.7
+survey_data = latent @ loadings + np.random.randn(n_participants, n_items) * 0.5
+
+# Standardize first 先標準化
+scaler = StandardScaler()
+survey_scaled = scaler.fit_transform(survey_data)
+
+# Apply PCA 應用 PCA
+pca = PCA()
+pca.fit(survey_scaled)
+
+# Scree plot: How much variance each component explains
+# 碎石圖：每個成分解釋多少變異
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+axes[0].bar(range(1, n_items + 1), pca.explained_variance_ratio_, color='steelblue')
+axes[0].set_xlabel('Principal Component')
+axes[0].set_ylabel('Explained Variance Ratio')
+axes[0].set_title('Scree Plot 碎石圖')
+
+# Cumulative variance 累積變異
+cumvar = np.cumsum(pca.explained_variance_ratio_)
+axes[1].plot(range(1, n_items + 1), cumvar, 'o-', color='steelblue')
+axes[1].axhline(y=0.8, color='red', linestyle='--', label='80% threshold')
+axes[1].set_xlabel('Number of Components')
+axes[1].set_ylabel('Cumulative Variance')
+axes[1].set_title('Cumulative Explained Variance')
+axes[1].legend()
+plt.tight_layout()
+plt.show()
+
+# Project to 2D for visualization 投射到 2D 以視覺化
+pca_2d = PCA(n_components=2)
+survey_2d = pca_2d.fit_transform(survey_scaled)
+
+fig, ax = plt.subplots(figsize=(7, 5))
+ax.scatter(survey_2d[:, 0], survey_2d[:, 1], alpha=0.5, s=20)
+ax.set_xlabel(f'PC1 ({pca_2d.explained_variance_ratio_[0]:.1%})')
+ax.set_ylabel(f'PC2 ({pca_2d.explained_variance_ratio_[1]:.1%})')
+ax.set_title('Survey Data Projected to 2D (PCA)')
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 4. K-Means Clustering K-Means 聚類分析
+
+K-Means groups data points into K clusters based on feature similarity.
+
+K-Means 根據特徵相似性將資料點分成 K 個群組。
+
+```python
+from sklearn.cluster import KMeans
+
+# Use the PCA-reduced survey data 使用 PCA 降維後的問卷資料
+# Find optimal K using the Elbow Method
+# 使用手肘法找到最佳 K 值
+inertias = []
+K_range = range(2, 10)
+for k in K_range:
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    km.fit(survey_2d)
+    inertias.append(km.inertia_)
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(K_range, inertias, 'o-', color='steelblue')
+ax.set_xlabel('K (Number of Clusters)')
+ax.set_ylabel('Inertia (Within-Cluster Sum of Squares)')
+ax.set_title('Elbow Method for Optimal K')
+plt.tight_layout()
+plt.show()
+
+# Apply K-Means with chosen K 應用選定的 K 值
+k = 3  # Based on elbow plot
+km = KMeans(n_clusters=k, random_state=42, n_init=10)
+clusters = km.fit_predict(survey_2d)
+
+fig, ax = plt.subplots(figsize=(7, 5))
+scatter = ax.scatter(survey_2d[:, 0], survey_2d[:, 1], 
+                     c=clusters, cmap='Set2', alpha=0.6, s=30)
+centers = km.cluster_centers_
+ax.scatter(centers[:, 0], centers[:, 1], c='red', marker='X', s=200, 
+           edgecolors='black', linewidths=1, label='Centroids')
+ax.set_xlabel('PC1')
+ax.set_ylabel('PC2')
+ax.set_title(f'K-Means Clustering (K={k}) on Survey Data')
+ax.legend()
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 5. Lab: PCA + K-Means on Behavioral Data
+## 5. 實作：對行為資料進行 PCA + K-Means
+
+### Task 任務
+
+1. Generate or load a dataset with 10+ features (e.g., multi-task cognitive battery)
+2. Standardize and apply PCA — determine how many components to keep
+3. Visualize the data in 2D PCA space
+4. Apply K-Means to identify participant subgroups
+5. Interpret: Do the clusters map onto known variables (age group, clinical status)?
+
+---
+
+## References 參考資料
+
+- **Decision Trees**: [https://scikit-learn.org/stable/modules/tree.html](https://scikit-learn.org/stable/modules/tree.html)
+- **Random Forest**: [https://scikit-learn.org/stable/modules/ensemble.html](https://scikit-learn.org/stable/modules/ensemble.html)
+- **PCA**: [https://scikit-learn.org/stable/modules/decomposition.html#pca](https://scikit-learn.org/stable/modules/decomposition.html#pca)
+- **K-Means**: [https://scikit-learn.org/stable/modules/clustering.html#k-means](https://scikit-learn.org/stable/modules/clustering.html#k-means)
+- **XGBoost Docs**: [https://xgboost.readthedocs.io/](https://xgboost.readthedocs.io/)

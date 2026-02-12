@@ -1,9 +1,230 @@
-# Week 16: Final Poster Presentation\n# 第十六週：期末海報發表會\n\n> **Date 日期**: 2026/06/11  \n> **Topic 主題**: Symposium 專題研討會\n\n---\n\n## Learning Objectives 學習目標\n\n1. 掌握科學海報的設計原則與排版技巧，有效傳達研究成果。
-2. 學習清晰、簡潔地口頭報告複雜的機器學習/AI 專案。
-3. 理解學術發表會的禮儀與互動方式，如問答環節和同儕交流。
-4. 準備完整且可重複的程式碼庫，作為專案的交付物。
-5. 根據評分標準 (Rubric) 完善專題，確保達到所有要求。
-\n---\n\n## 1. The Scientific Poster Presentation 科學海報發表會\n\n期末海報發表會是展示您在「心理學程式設計與人工智慧應用」課程中，如何將機器學習和 AI 應用於心理學研究的成果。這是一個分享知識、接收反饋和與同儕交流的絕佳機會。\n\n### 1.1 Poster Design Principles 海報設計原則\n\n-   **清晰簡潔 (Clarity & Conciseness)**: 使用簡潔的文字和圖表，避免冗長段落。重點是快速傳達核心訊息。\n-   **視覺吸引力 (Visual Appeal)**: 利用高品質的圖表、一致的配色方案和字體來吸引觀眾。圖表應能獨立說明問題。\n-   **邏輯流程 (Logical Flow)**: 內容應有清晰的邏輯順序，通常遵循「引言 (Introduction) → 方法 (Methods) → 結果 (Results) → 討論 (Discussion) → 結論 (Conclusion)」的科學報告結構。\n-   **留白 (White Space)**: 適當的留白能讓海報看起來更專業、更易讀。\n\n**核心提示**: 將海報視為一個視覺化的故事，引導觀眾從問題到解決方案。\n\n### 1.2 Structure & Content 海報結構與內容\n\n一張標準的科學海報通常包含以下部分：\n\n1.  **標題 (Title)**: 簡潔、吸引人，並清楚說明專案主題。\n2.  **作者與單位 (Authors & Affiliations)**: 您的姓名、學號和中央大學認知神經科學研究所。\n3.  **引言 (Introduction)**:\n    -   研究背景與重要性。\n    -   研究問題/目標。\n    -   假設 (如果適用)。\n4.  **方法 (Methods)**:\n    -   資料來源與收集方式 (例如，PsychoPy 實驗、公共資料集)。\n    -   資料預處理步驟。\n    -   使用的機器學習/深度學習模型與演算法。\n    -   主要程式碼片段或流程圖 (如果能視覺化展示)。\n5.  **結果 (Results)**:\n    -   清晰展示模型性能 (例如，準確度、F1 分數、AUC)。\n    -   透過圖表 (如混淆矩陣、ROC 曲線、數據分佈圖、降維圖) 視覺化關鍵發現。\n6.  **討論 (Discussion)**:\n    -   解釋結果的意義。\n    -   連結結果與研究問題/假設。\n    -   專案的局限性。\n7.  **結論 (Conclusion)**:\n    -   總結主要發現。\n    -   強調專案的貢獻和未來展望。\n8.  **參考文獻 (References)**: 簡要列出關鍵參考資料。\n9.  **致謝 (Acknowledgements)**: 感謝幫助過您的人或支持單位 (例如，指導教授)。\n\n**心理學研究中的重要性**: 訓練學生將複雜的計算方法和結果轉化為易於理解的視覺和文字內容，這是科學傳播的核心技能。\n\n```python\n# Conceptual example of generating data for a poster visualization\n# 生成海報可視化資料的概念範例\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport numpy as np\nfrom sklearn.metrics import confusion_matrix, roc_curve, auc\n\n# Assume we have some model predictions and true labels\n# 假設我們有一些模型預測和真實標籤\ny_true = np.array([0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1])\ny_pred = np.array([0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1])\ny_prob = np.array([0.1, 0.9, 0.2, 0.8, 0.3, 0.4, 0.15, 0.6, 0.95, 0.85, 0.25, 0.7])\n\n# --- Example 1: Confusion Matrix for Results Section ---\ncm = confusion_matrix(y_true, y_pred)\nplt.figure(figsize=(4, 3))\nsns.heatmap(cm, annot=True, fmt=\"d\", cmap=\'Blues\', xticklabels=[\'Predicted 0\', \'Predicted 1\'], yticklabels=[\'Actual 0\', \'Actual 1\'])\nplt.title(\"Confusion Matrix\")\nplt.ylabel(\"True Label\")\nplt.xlabel(\"Predicted Label\")\n# plt.savefig(\'confusion_matrix.png\')\n# plt.close()\nprint(\"Generated conceptual confusion matrix for poster.\")\n\n# --- Example 2: ROC Curve for Results Section ---\nfpr, tpr, _ = roc_curve(y_true, y_prob)\nroc_auc = auc(fpr, tpr)\nplt.figure(figsize=(4, 3))\nplt.plot(fpr, tpr, color=\'darkorange\', lw=2, label=\'ROC curve (area = %0.2f)\' % roc_auc)\nplt.plot([0, 1], [0, 1], color=\'navy\', lw=2, linestyle=\'--\')\nplt.xlim([0.0, 1.0])\nplt.ylim([0.0, 1.05])\nplt.xlabel(\'False Positive Rate\')\nplt.ylabel(\'True Positive Rate\')\nplt.title(\'Receiver Operating Characteristic\')\nplt.legend(loc=\"lower right\")\n# plt.savefig(\'roc_curve.png\')\n# plt.close()\nprint(\"Generated conceptual ROC curve for poster.\")\n\nprint(\"Poster visualization code examples demonstrate how to create figures for your presentation.\")\n```\n\n---\n\n## 2. Poster Presentation Requirements & Rubric\n## 2. 海報發表要求與評分標準\n\n期末專題的評分將綜合海報內容、口頭報告表現以及程式碼庫的質量。\n\n### 2.1 Deliverables 交付物\n\n1.  **科學海報 (Scientific Poster)**: 一份清晰、視覺吸引力強的數位海報 (例如，PDF 格式)。\n2.  **程式碼庫 (Code Repository)**: 一個公開的 GitHub 連結，包含所有專案程式碼、資料 (如果允許分享) 和詳細的 `README.md` 文件，確保他人能夠重現您的結果。\n    -   `README.md` 應包含：專案目標、如何運行程式碼、結果摘要。\n\n### 2.2 Presentation Guidelines 報告指南\n\n-   **時間控制**: 每位同學將有 5-7 分鐘的時間介紹您的專案海報，隨後是 3 分鐘的問答環節。\n-   **重點突出**: 專注於專案的核心亮點、關鍵發現和對心理學的意義。\n-   **清晰溝通**: 用非技術人員也能理解的語言解釋複雜概念。\n-   **問答環節**: 準備好回答關於您的方法、結果和討論的提問。\n\n### 2.3 Grading Rubric 評分標準\n\n| 評分項目 (Criteria)             | 佔比 (Weight) | 描述 (Description)                                                                                                                                              |\n| :------------------------------ | :------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| **海報內容 (Poster Content)**   | 30%           | 涵蓋所有必要部分 (引言、方法、結果、討論、結論)。內容準確、有深度，並與研究問題高度相關。                                                                      |\n| **海報設計 (Poster Design)**    | 20%           | 視覺吸引力強，排版清晰，圖表專業且易於理解。有效使用視覺元素傳達訊息。                                                                                            |\n| **口頭報告 (Oral Presentation)**  | 20%           | 報告流暢、時間控制得當，重點突出。能清晰解釋複雜概念，並有效回應問題。                                                                                            |\n| **程式碼庫 (Code Repository)**    | 20%           | 程式碼結構良好、註釋清晰、可重現。包含詳盡的 `README.md`。Git 版本控制使用得當。                                                                                  |\n| **創新與潛力 (Innovation & Potential)** | 10%           | 專案的獨創性、挑戰性及其在心理學領域的潛在影響或未來發展方向。                                                                                                        |\n\n**心理學研究中的重要性**: 評分標準強調的不僅是技術實現，還有科學傳播的能力、程式碼的開放性與可重複性，以及對研究領域的潛在貢獻。\n\n---\n\n## 3. Lab Activity: Poster & Presentation Preparation\n## 3. 實作活動：海報與報告準備\n\n**目標**: 學生利用課堂時間，針對期末海報發表會進行最後的準備，並進行模擬發表。
+# Week 16: Final Poster Presentation
+# 第十六週：期末海報發表
 
-**Goal**: Students use class time to finalize preparations for the final poster presentation and conduct mock presentations.\n\n### 任務 Task\n\n1.  **海報最終審閱 (Final Poster Review)**: 檢查海報內容的準確性、一致性、視覺效果和語法錯誤。確保所有圖表清晰標註。\n2.  **口頭報告演練 (Presentation Rehearsal)**: 進行至少一次完整的口頭報告演練，計時並錄音 (如果可能)，以優化表達、時間控制和語氣。\n3.  **問答準備 (Q&A Preparation)**: 預測可能被問到的問題，並準備簡潔而有力的答案。\n4.  **程式碼庫檢查 (Code Repository Check)**: 確保 GitHub 庫是公開的，所有最新程式碼已提交，`README.md` 已更新，且環境配置說明清晰。\n5.  **設備測試 (Equipment Test)**: 確認用於展示海報的設備 (例如，筆記型電腦、投影儀) 運作正常。
-\n```python\n# No specific code example for this lab, as it's a preparation session.\n# The focus is on finalizing project outputs and practicing presentation skills.\n\nprint(\"This lab focuses on the final touches for your capstone project presentation.\")\nprint(\"確保所有交付物都已準備就緒，並練習您的報告。\")\n```\n\n---\n\n## 4. References 參考資料\n\n- **How to Create a Research Poster**: [https://www.ncsu.edu/project/posters/NewPosterTutorial/](https://www.ncsu.edu/project/posters/NewPosterTutorial/)\n- **Presenting Your Science**: [https://www.hhmi.org/science-education/programs/developing-scientists/communicating-science](https://www.hhmi.org/science-education/programs/developing-scientists/communicating-science)\n- **GitHub Best Practices for Research**: [https://guides.github.com/introduction/flow/](https://guides.github.com/introduction/flow/)\n- **Designing Science Presentations**: [https://www.cell.com/cell/fulltext/S0092-8674(17)30492-3](https://www.cell.com/cell/fulltext/S0092-8674(17)30492-3)\n
+> **Date 日期**: 2026/06/11  
+> **Activity 活動**: Symposium 學術研討會
+
+---
+
+## Learning Objectives 學習目標
+
+1. 學會製作符合學術標準的研究海報
+2. 練習口頭報告與技術溝通
+3. 提供並接受同儕的建設性回饋
+4. 完成期末專題的最終版本並公開發布
+
+---
+
+## 1. Poster Requirements 海報要求
+
+### 1.1 Required Sections 必要區塊
+
+Your poster should include the following sections:
+
+您的海報應包含以下區塊：
+
+| Section | Content | Guidelines |
+|---------|---------|------------|
+| **Title** | Project name, authors, affiliation | Clear, concise |
+| **Introduction** | Background & research question | 2-3 sentences + 1 key citation |
+| **Methods** | Code/algorithm description | Include a flowchart or diagram |
+| **Results** | Visualizations & metrics | 2-3 publication-quality figures |
+| **Conclusion** | Key findings & limitations | What did you learn? |
+| **QR Code** | Link to GitHub repository | Print-scannable |
+
+### 1.2 Design Guidelines 設計準則
+
+```
+┌──────────────────────────────────────────────────────┐
+│                    PROJECT TITLE                      │
+│              Author Name — Department                 │
+├──────────────┬──────────────┬────────────────────────┤
+│              │              │                        │
+│ Introduction │   Methods    │       Results          │
+│              │              │                        │
+│ • Background │ • Pipeline   │  ┌──────────────────┐  │
+│ • Question   │   diagram    │  │  Figure 1: ...   │  │
+│ • Motivation │ • Key code   │  │  [visualization] │  │
+│              │   snippets   │  └──────────────────┘  │
+│              │ • Model      │  ┌──────────────────┐  │
+│              │   choice &   │  │  Figure 2: ...   │  │
+│              │   params     │  │  [metrics table] │  │
+│              │              │  └──────────────────┘  │
+├──────────────┴──────────────┼────────────────────────┤
+│         Conclusion          │    GitHub QR Code      │
+│ • Key findings              │    ┌──────────┐        │
+│ • Limitations               │    │ ██  ██   │        │
+│ • Future work               │    │ ██  ██   │        │
+│                             │    └──────────┘        │
+└─────────────────────────────┴────────────────────────┘
+```
+
+**Tips 提示:**
+- Font size: Title ≥ 72pt, Headers ≥ 36pt, Body ≥ 24pt
+- Use high-resolution figures (300 DPI for print)
+- Minimal text — let figures tell the story
+- Consistent color scheme throughout
+
+---
+
+## 2. Presentation Format 發表格式
+
+### 2.1 Symposium Schedule 研討會流程
+
+| Time | Activity |
+|------|----------|
+| 0:00–0:15 | Setup & poster mounting |
+| 0:15–1:30 | **Session 1**: Half the class presents, half browses |
+| 1:30–1:40 | Break |
+| 1:40–2:45 | **Session 2**: Switch roles |
+| 2:45–3:00 | Voting & wrap-up |
+
+### 2.2 Presentation Guidelines 報告指引
+
+Each presenter should prepare:
+- **2-minute elevator pitch**: What did you do? Why? Key result?
+- **5-minute deep dive**: For interested visitors who want details
+- **Live demo** (optional): Run one analysis live from your laptop
+
+---
+
+## 3. Deliverables 繳交項目
+
+### 3.1 Code Repository 程式碼儲存庫
+
+Your GitHub repository must include:
+
+| Item | Requirement |
+|------|-------------|
+| `README.md` | Project description, install instructions, usage |
+| `requirements.txt` | All Python dependencies with versions |
+| Source code | Clean, documented, modular |
+| Data | Raw data or instructions to download |
+| Results | Output figures and evaluation metrics |
+| License | MIT recommended |
+
+### 3.2 Generating a QR Code 產生 QR Code
+
+```python
+# pip install qrcode[pil]
+import qrcode
+
+# Generate QR code for your GitHub repo
+# 為你的 GitHub 儲存庫產生 QR Code
+repo_url = "https://github.com/yourusername/your-project"
+
+qr = qrcode.QRCode(version=1, box_size=10, border=4)
+qr.add_data(repo_url)
+qr.make(fit=True)
+
+img = qr.make_image(fill_color="black", back_color="white")
+img.save("github_qr.png")
+print(f"QR code saved for: {repo_url}")
+```
+
+### 3.3 Creating Publication-Quality Figures 製作出版品質的圖表
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib
+import numpy as np
+
+# Set publication style 設定出版品質風格
+matplotlib.rcParams.update({
+    'font.size': 14,
+    'font.family': 'sans-serif',
+    'axes.labelsize': 16,
+    'axes.titlesize': 18,
+    'xtick.labelsize': 12,
+    'ytick.labelsize': 12,
+    'legend.fontsize': 12,
+    'figure.dpi': 300,
+    'savefig.dpi': 300,
+    'savefig.bbox': 'tight',
+})
+
+# Example: Model comparison bar chart
+# 範例：模型比較長條圖
+models = ['Logistic\nRegression', 'Random\nForest', 'SVM', 'MLP']
+accuracy = [0.82, 0.89, 0.85, 0.91]
+auc = [0.79, 0.87, 0.83, 0.90]
+
+x = np.arange(len(models))
+width = 0.35
+
+fig, ax = plt.subplots(figsize=(8, 5))
+bars1 = ax.bar(x - width/2, accuracy, width, label='Accuracy', color='#3498db')
+bars2 = ax.bar(x + width/2, auc, width, label='AUC', color='#e74c3c')
+
+ax.set_ylabel('Score')
+ax.set_title('Model Performance Comparison')
+ax.set_xticks(x)
+ax.set_xticklabels(models)
+ax.legend()
+ax.set_ylim(0.5, 1.0)
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+# Add value labels 加上數值標籤
+for bar in bars1:
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
+            f'{bar.get_height():.2f}', ha='center', va='bottom', fontsize=10)
+for bar in bars2:
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
+            f'{bar.get_height():.2f}', ha='center', va='bottom', fontsize=10)
+
+plt.tight_layout()
+plt.savefig('model_comparison.png')
+plt.show()
+```
+
+---
+
+## 4. Grading Rubric 評分標準
+
+| Criterion | Weight | Excellent (A) | Adequate (B) | Needs Work (C) |
+|-----------|:------:|---------------|--------------|-----------------|
+| **Code Quality** | 25% | Modular, documented, reproducible | Runs correctly, some comments | Messy, hard to follow |
+| **Analysis** | 25% | Appropriate model, rigorous evaluation | Correct but basic | Missing evaluation metrics |
+| **Visualization** | 20% | Publication-quality, informative | Clear but basic | Hard to read |
+| **Poster & Presentation** | 20% | Professional design, clear communication | Adequate but verbose | Disorganized |
+| **Reproducibility** | 10% | README + requirements.txt + seed | Partially documented | Cannot reproduce |
+
+---
+
+## 5. Semester Recap 學期回顧
+
+### Module 1: Experimental Programming 實驗程式設計
+
+| Week | Topic | Key Skill |
+|:----:|-------|-----------|
+| 01 | Python + Environment | Virtual environments, NumPy |
+| 02 | PsychoPy Coder | Windows, stimuli, timing |
+| 03 | Event Loop | Input, data logging, Stroop |
+| 04 | Builder & Online | Pavlovia, staircase |
+| 05 | Data Analysis | Pandas, Seaborn, scipy |
+| 06 | Example Designs | Posner, n-Back |
+| 07 | AI Helpers & Git | Copilot, clean code |
+| 08 | Midterm | Project presentation |
+
+### Module 2: Machine Learning & AI
+
+| Week | Topic | Key Skill |
+|:----:|-------|-----------|
+| 09 | ML Foundations | scikit-learn, pipeline |
+| 10 | Regression & Classification | LogReg, SVM, metrics |
+| 11 | Advanced ML | Trees, PCA, K-Means |
+| 12 | GPU Tools | PyTorch, benchmarking |
+| 13 | Deep Learning | MLP, CNN, MNIST |
+| 14 | LLMs | Transformers, HuggingFace |
+| 15 | Capstone Studio | Integration, code review |
+| 16 | Final Presentation | This week! |
+
+---
+
+## References 參考資料
+
+- **Scientific Poster Design**: [https://www.makesigns.com/tutorials/](https://www.makesigns.com/tutorials/)
+- **Matplotlib Customization**: [https://matplotlib.org/stable/tutorials/introductory/customizing.html](https://matplotlib.org/stable/tutorials/introductory/customizing.html)
+- **Writing a Good README**: [https://www.makeareadme.com/](https://www.makeareadme.com/)
+- **QR Code Library**: [https://pypi.org/project/qrcode/](https://pypi.org/project/qrcode/)

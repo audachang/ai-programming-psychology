@@ -1,10 +1,286 @@
-# Week 13: Deep Learning\n# 第十三週：深度學習\n\n> **Date 日期**: 2026/05/21  \n> **Topic 主題**: Neural Networks 神經網路\n\n---\n\n## Learning Objectives 學習目標\n\n1. 理解深度學習 (Deep Learning) 的核心概念與神經網路 (Neural Networks) 的基本組成。
-2. 熟悉神經網路的訓練過程：前向傳播、損失計算、反向傳播與優化器。
-3. 學習如何使用 Keras (TensorFlow) 的 Sequential 和 Functional API 搭建不同類型的神經網路。
-4. 掌握卷積神經網路 (Convolutional Neural Networks, CNNs) 的原理與在影像處理中的應用。
-5. 理解 Dropout 和 Batch Normalization 等正則化與優化技術，以提升模型性能和穩定性。
-\n---\n\n## 1. Introduction to Deep Learning & Neural Networks\n## 1. 深度學習與神經網路導論\n\n深度學習是機器學習的一個子領域，其核心是深度神經網路，模仿人腦結構，通過多層的「神經元」從大量資料中學習複雜的模式。\n\n### 1.1 Neural Network Basics 神經網路基礎\n\n-   **神經元 (Neuron)**: 神經網路的基本單元，接收輸入、執行加權和 (weighted sum)，並通過激活函數 (activation function) 產生輸出。\n-   **層 (Layers)**: 神經網路由輸入層 (Input Layer)、隱藏層 (Hidden Layers) 和輸出層 (Output Layer) 組成。\n-   **權重 (Weights) 與偏差 (Biases)**: 模型學習的參數，決定了神經元之間連接的強度。\n-   **激活函數 (Activation Functions)**: 引入非線性，使網路能夠學習更複雜的模式。常見的有 ReLU (Rectified Linear Unit)、Sigmoid、Softmax。\n    -   **ReLU**: $f(x) = \\max(0, x)$，簡單有效，常用於隱藏層。\n    -   **Sigmoid**: $f(x) = \\frac{1}{1 + e^{-x}}$，將輸出壓縮到 0-1 之間，常用於二元分類的輸出層。\n    -   **Softmax**: 將多個輸出轉換為機率分佈，常用於多類別分類的輸出層。\n\n### 1.2 Training Process 訓練過程\n\n1.  **前向傳播 (Forward Pass)**: 輸入資料通過網路，計算得到預測輸出。\n2.  **損失函數 (Loss Function)**: 衡量模型預測值與真實值之間的差異 (例如，分類任務的交叉熵損失 Cross-Entropy Loss)。\n3.  **反向傳播 (Backward Pass)**: 計算損失函數對每個權重和偏差的梯度。\n4.  **優化器 (Optimizer)**: 使用梯度下降 (Gradient Descent) 或其變種 (如 Adam、SGD) 來調整權重和偏差，以最小化損失。\n\n**心理學應用**: 建立神經網路模型來預測個體對情緒刺激的反應；分析和分類 fMRI 或 EEG 數據中的複雜模式。\n\n```python\nimport tensorflow as tf\nfrom tensorflow import keras\nfrom tensorflow.keras import layers\nimport numpy as np\n\nprint(f\"TensorFlow Version: {tf.__version__}\")\n\n# 1. Generate synthetic data for binary classification\n# 1. 生成用於二元分類的合成資料\nX_toy = np.random.rand(1000, 10) # 1000 samples, 10 features\ny_toy = (np.sum(X_toy[:, :5], axis=1) > 2.5).astype(float) # Binary labels\n\n# Split data\nX_train, X_test, y_train, y_test = train_test_split(X_toy, y_toy, test_size=0.2, random_state=42)\n\n# 2. Build a simple Sequential API model (Multi-Layer Perceptron, MLP)\n# 2. 建立一個簡單的 Sequential API 模型 (多層感知器, MLP)\nmodel_mlp_sequential = keras.Sequential([\n    layers.Input(shape=(10,)), # Input layer with 10 features\n    layers.Dense(32, activation=\'relu\'), # Hidden layer with 32 neurons and ReLU activation\n    layers.Dense(16, activation=\'relu\'), # Another hidden layer\n    layers.Dense(1, activation=\'sigmoid\') # Output layer for binary classification (sigmoid for probabilities)\n])\n\n# Compile the model\n# 編譯模型\nmodel_mlp_sequential.compile(\n    optimizer=\'adam\',\n    loss=\'binary_crossentropy\', # Appropriate for binary classification\n    metrics=[\'accuracy\']\n)\n\nmodel_mlp_sequential.summary()\n\n# Train the model\n# 訓練模型\nprint(\"\nTraining Sequential MLP model...\")\nhistory_sequential = model_mlp_sequential.fit(X_train, y_train, epochs=10, batch_size=32, verbose=0)\nprint(f\"Final Training Accuracy (Sequential): {history_sequential.history[\'accuracy\'][-1]:.4f}\")\n\n# Evaluate the model\nloss, accuracy = model_mlp_sequential.evaluate(X_test, y_test, verbose=0)\nprint(f\"Test Accuracy (Sequential): {accuracy:.4f}\")\n\n\n# 3. Build a Functional API model (more flexible)\n# 3. 建立一個 Functional API 模型 (更靈活)\ninputs = keras.Input(shape=(10,))\nx = layers.Dense(64, activation=\'relu\')(inputs)\nx = layers.Dense(32, activation=\'relu\')(x)\noutputs = layers.Dense(1, activation=\'sigmoid\')(x)\n\nmodel_mlp_functional = keras.Model(inputs=inputs, outputs=outputs, name=\"functional_mlp\")\n\nmodel_mlp_functional.compile(\n    optimizer=\'adam\',\n    loss=\'binary_crossentropy\',\n    metrics=[\'accuracy\']\n)\n\nmodel_mlp_functional.summary()\n\n# Train the model\nprint(\"\nTraining Functional MLP model...\")\nhistory_functional = model_mlp_functional.fit(X_train, y_train, epochs=10, batch_size=32, verbose=0)\nprint(f\"Final Training Accuracy (Functional): {history_functional.history[\'accuracy\'][-1]:.4f}\")\n\n# Evaluate the model\nloss, accuracy = model_mlp_functional.evaluate(X_test, y_test, verbose=0)\nprint(f\"Test Accuracy (Functional): {accuracy:.4f}\")\n```\n\n---\n\n## 2. Convolutional Neural Networks (CNNs) 卷積神經網路\n\nCNN 是一種專門用於處理網格狀資料 (如影像) 的深度學習模型。它們在影像識別、物件檢測等任務中取得了巨大成功。\n\n-   **核心組件**:\n    -   **卷積層 (Convolutional Layer)**: 使用可學習的濾波器 (filters) 對輸入數據執行卷積操作，提取特徵 (如邊緣、紋理)。\n    -   **池化層 (Pooling Layer)**: 降低特徵圖的維度，減少計算量並提供一定程度的平移不變性 (如 Max Pooling)。\n    -   **全連接層 (Fully Connected Layer)**: 在卷積和池化之後，通常會接上傳統的 MLP 層進行最終分類或迴歸。
--   **工作原理**: 通過逐層提取越來越複雜的空間特徵來理解影像內容。\n\n**心理學應用**: 自動分析行為實驗中的視訊數據 (如面部表情、肢體動作)；從腦影像中自動識別與特定認知功能相關的解剖區域或病變。\n\n```python\n# Example of a simple CNN for image classification (conceptual)\n# 影像分類的簡單 CNN 範例 (概念性)\n# This requires actual image data, but we can define the architecture.\n# 這需要實際的影像資料，但我們可以定義其架構。\n\n# from tensorflow.keras.datasets import mnist # For a real example, you'd load a dataset\n# (x_train_mnist, y_train_mnist), (x_test_mnist, y_test_mnist) = mnist.load_data()\n# x_train_mnist = x_train_mnist.reshape(-1, 28, 28, 1).astype('float32') / 255.0\n# x_test_mnist = x_test_mnist.reshape(-1, 28, 28, 1).astype('float32') / 255.0\n\nimg_height = 28\nimg_width = 28\nn_channels = 1 # Grayscale images\nnum_classes = 10 # For MNIST digits\n\nmodel_cnn = keras.Sequential([\n    layers.Input(shape=(img_height, img_width, n_channels)),\n    layers.Conv2D(32, (3, 3), activation=\'relu\', padding=\'same\'), # Convolutional layer\n    layers.MaxPooling2D((2, 2)), # Max pooling layer\n    layers.Conv2D(64, (3, 3), activation=\'relu\', padding=\'same\'),\n    layers.MaxPooling2D((2, 2)),\n    layers.Flatten(), # Flatten the 2D feature maps into a 1D vector\n    layers.Dense(128, activation=\'relu\'),\n    layers.Dense(num_classes, activation=\'softmax\') # Output layer for multi-class classification\n])\n\nmodel_cnn.compile(\n    optimizer=\'adam\',\n    loss=\'sparse_categorical_crossentropy\', # Use for integer labels\n    metrics=[\'accuracy\']\n)\n\nprint(\"\nCNN Model Summary (Conceptual for image data):\")\nmodel_cnn.summary()\n\n# # Example of training (requires actual data)\n# # 訓練範例 (需要實際資料)\n# print("\nTraining CNN model (conceptual)...\n")\n# # history_cnn = model_cnn.fit(x_train_mnist, y_train_mnist, epochs=5, batch_size=64, validation_split=0.1)\n# # loss, accuracy = model_cnn.evaluate(x_test_mnist, y_test_mnist)\n# # print(f"CNN Test Accuracy: {accuracy:.4f}")\nprint(\"To train this CNN, you would need an image dataset like MNIST.\")\n```\n\n---\n\n## 3. Regularization & Optimization Techniques\n## 3. 正則化與優化技術\n\n深度學習模型容易過度擬合訓練資料。正則化技術有助於減少過度擬合，而優化技術則能加速訓練過程並提升模型性能。\n\n### 3.1 Dropout 丟棄法\n\n-   **定義**: 在訓練過程中，隨機地「關閉」 (即將其輸出設置為零) 一定比例的神經元。這使得網路每次迭代都在不同的子網路上訓練，防止神經元之間產生複雜的共適應 (co-adaptation)。\n-   **效果**: 類似於訓練多個不同的小網路並進行平均，從而起到集成 (Ensemble) 的效果，降低過度擬合。\n\n```python\n# Example of adding Dropout to a Sequential model\n# 向 Sequential 模型添加 Dropout 的範例\nmodel_dropout = keras.Sequential([\n    layers.Input(shape=(10,)),\n    layers.Dense(64, activation=\'relu\'),\n    layers.Dropout(0.5), # Apply Dropout with 50% dropout rate\n    layers.Dense(32, activation=\'relu\'),\n    layers.Dropout(0.3),\n    layers.Dense(1, activation=\'sigmoid\')\n])\n\nprint(\"\nModel with Dropout Summary:\")\nmodel_dropout.summary()\n\n# Compile and train as usual\n# model_dropout.compile(optimizer=\'adam\', loss=\'binary_crossentropy\', metrics=[\'accuracy\'])\n# model_dropout.fit(X_train, y_train, epochs=10, batch_size=32, validation_split=0.1)\nprint(\"Dropout layers added. This helps prevent overfitting.\")\n```\n\n### 3.2 Batch Normalization 批次正規化\n\n-   **定義**: 在神經網路的每一層輸入激活函數之前，對輸入進行標準化 (均值為 0，方差為 1)。\n-   **效果**: 解決「內部協變位移」(Internal Covariate Shift) 問題，加速訓練，允許使用更大的學習率，並對初始化權重不那麼敏感，同時也具有輕微的正則化效果。\n\n```python\n# Example of adding Batch Normalization to a Sequential model\n# 向 Sequential 模型添加 Batch Normalization 的範例\nmodel_bn = keras.Sequential([\n    layers.Input(shape=(10,)),\n    layers.Dense(64),\n    layers.BatchNormalization(), # Apply Batch Normalization before activation\n    layers.ReLU(),\n    layers.Dense(32),\n    layers.BatchNormalization(),\n    layers.ReLU(),\n    layers.Dense(1, activation=\'sigmoid\')\n])\n\nprint(\"\nModel with Batch Normalization Summary:\")\nmodel_bn.summary()\n\n# Compile and train as usual\n# model_bn.compile(optimizer=\'adam\', loss=\'binary_crossentropy\', metrics=[\'accuracy\'])\n# model_bn.fit(X_train, y_train, epochs=10, batch_size=32, validation_split=0.1)\nprint(\"Batch Normalization layers added. This helps stabilize and speed up training.\")\n```\n\n---\n\n## 4. Lab Activity: Building a Deep Learning Classifier\n## 4. 實作活動：建構深度學習分類器\n\n**目標**: 搭建一個深度學習模型來解決一個簡單的分類問題，並探索 Dropout 和 Batch Normalization 的影響。
+# Week 13: Deep Learning
+# 第十三週：深度學習
 
-**Goal**: Build a deep learning model to solve a simple classification problem and explore the effects of Dropout and Batch Normalization.
-\n### 任務 Task\n\n1.  生成一個包含 2 個特徵和 2 個類別的合成二維資料集 (使用 `make_moons` 或 `make_circles` 以生成非線性可分離資料)。\n2.  使用 `Sequential` 或 `Functional` API 搭建一個 MLP 模型，包含至少兩個隱藏層。\n3.  編譯並訓練模型，評估其在測試集上的準確度。\n4.  嘗試在隱藏層之後添加 `Dropout` 層，觀察對訓練和測試準確度的影響。\n5.  嘗試在 `Dense` 層和激活函數之間添加 `BatchNormalization` 層，觀察其對訓練收斂速度和最終性能的影響。\n6.  繪製模型決策邊界 (Decision Boundary) (選做)。\n\n```python\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.datasets import make_moons, make_circles\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\nfrom tensorflow import keras\nfrom tensorflow.keras import layers\n\n# 1. Generate a synthetic 2D dataset (non-linearly separable)\n# 1. 生成一個合成的二維資料集（非線性可分離）\nnp.random.seed(42)\nX_moons, y_moons = make_moons(n_samples=1000, noise=0.3, random_state=42)\n\n# Standardize the features\n# 標準化特徵\nscaler_lab = StandardScaler()\nX_moons_scaled = scaler_lab.fit_transform(X_moons)\n\n# Split data\nX_train_lab, X_test_lab, y_train_lab, y_test_lab = train_test_split(\n    X_moons_scaled, y_moons, test_size=0.25, random_state=42\n)\n\nprint(f\"Dataset shape: {X_moons_scaled.shape}, Labels shape: {y_moons.shape}\")\n\n# Plot the dataset (conceptual)\nplt.figure(figsize=(8, 6))\nplt.scatter(X_moons_scaled[:, 0], X_moons_scaled[:, 1], c=y_moons, cmap=\'coolwarm\', s=50, alpha=0.8)\nplt.title(\"Synthetic Moons Dataset\")\nplt.xlabel(\"Feature 1 (Scaled)\")\nplt.ylabel(\"Feature 2 (Scaled)\")\nplt.grid(True)\n# plt.show() # Uncomment to display plot\n\n# 2. Build an MLP model with two hidden layers (no Dropout/BN initially)\n# 2. 建立一個包含兩個隱藏層的 MLP 模型（初期不含 Dropout/BN）\nmodel_lab = keras.Sequential([\n    layers.Input(shape=(2,)), # 2 features\n    layers.Dense(64, activation=\'relu\'),\n    layers.Dense(32, activation=\'relu\'),\n    layers.Dense(1, activation=\'sigmoid\')\n])\n\nmodel_lab.compile(\n    optimizer=\'adam\',\n    loss=\'binary_crossentropy\',\n    metrics=[\'accuracy\']\n)\n\nprint(\"\n--- Initial Model Training ---\")\nmodel_lab.fit(X_train_lab, y_train_lab, epochs=20, batch_size=32, verbose=0)\nloss, accuracy = model_lab.evaluate(X_test_lab, y_test_lab, verbose=0)\nprint(f\"Initial Model Test Accuracy: {accuracy:.4f}\")\n\n# 3. Experiment with Dropout and Batch Normalization\n# 3. 實驗 Dropout 和 Batch Normalization 的影響\nprint(\"\n--- Experimenting with Regularization ---\")\nmodel_regularized = keras.Sequential([\n    layers.Input(shape=(2,)),\n    layers.Dense(64),\n    layers.BatchNormalization(), # Add Batch Normalization\n    layers.ReLU(),\n    layers.Dropout(0.4), # Add Dropout\n    layers.Dense(32),\n    layers.BatchNormalization(),\n    layers.ReLU(),\n    layers.Dropout(0.2),\n    layers.Dense(1, activation=\'sigmoid\')\n])\n\nmodel_regularized.compile(\n    optimizer=\'adam\',\n    loss=\'binary_crossentropy\',\n    metrics=[\'accuracy\']\n)\n\nprint(\"Training Regularized Model...\")\nhistory_regularized = model_regularized.fit(X_train_lab, y_train_lab, epochs=50, batch_size=32, validation_split=0.2, verbose=0)\nloss_reg, accuracy_reg = model_regularized.evaluate(X_test_lab, y_test_lab, verbose=0)\nprint(f\"Regularized Model Test Accuracy: {accuracy_reg:.4f}\")\n\n# Optional: Plotting decision boundary for a 2D classifier (conceptual)\n# 可選：繪製二維分類器的決策邊界（概念性）\n# def plot_decision_boundary(X, y, model, title):\n#     h = .02  # step size in the mesh\n#     x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1\n#     y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1\n#     xx, yy = np.meshgrid(np.arange(x_min, x_max, h),\n#                          np.arange(y_min, y_max, h))\n#     Z = (model.predict(np.c_[xx.ravel(), yy.ravel()]) > 0.5).astype(int)\n#     Z = Z.reshape(xx.shape)\n#     plt.contourf(xx, yy, Z, cmap=plt.cm.coolwarm, alpha=0.8)\n#     plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.coolwarm, s=50, edgecolors=\'k\')\n#     plt.title(title)\n#     plt.show()\n\n# plot_decision_boundary(X_test_lab, y_test_lab, model_regularized, \"Regularized Model Decision Boundary\")\n\nprint(\"Lab Activity Complete.\")\n```\n\n---\n\n## 5. References 參考資料\n\n- **TensorFlow Documentation**: [https://www.tensorflow.org/api_docs/python/tf](https://www.tensorflow.org/api_docs/python/tf)\n- **Keras Documentation**: [https://keras.io/](https://keras.io/)\n- **Deep Learning Book (Goodfellow et al.)**: [https://www.deeplearningbook.org/](https://www.deeplearningbook.org/)\n- **CS231n Convolutional Neural Networks for Visual Recognition**: [http://cs231n.github.io/](http://cs231n.github.io/)\n- **Batch Normalization Paper**: Ioffe, S., & Szegedy, C. (2015). *Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift*. arXiv preprint arXiv:1502.03167.\n- **Dropout Paper**: Srivastava, N., Hinton, G., Krizhevsky, A., Sutskever, I., & Salakhutdinov, R. (2014). *Dropout: A Simple Way to Prevent Neural Networks from Overfitting*. Journal of Machine Learning Research, 15(1), 1929-1958.\n
+> **Date 日期**: 2026/05/21  
+> **Topic 主題**: Neural Networks 神經網路
+
+---
+
+## Learning Objectives 學習目標
+
+1. 理解神經網路的基本元件：神經元、層、權重、偏差、激活函數
+2. 理解反向傳播 (Backpropagation) 與優化器 (Optimizers) 的運作原理
+3. 使用 **PyTorch** 建構多層感知機 (MLP)
+4. 學習 CNN 的基本概念與影像分類應用
+5. 掌握 Dropout 和 Batch Normalization 等正則化技巧
+
+---
+
+## 1. Neural Network Fundamentals
+## 1. 神經網路基礎
+
+### 1.1 The Artificial Neuron 人工神經元
+
+```
+  x₁ --w₁--\
+  x₂ --w₂---→ Σ(wᵢxᵢ + b) → f(z) → output
+  x₃ --w₃--/
+```
+
+- **Inputs (x)**: Features from the data 資料的特徵
+- **Weights (w)**: Learnable parameters 可學習的參數
+- **Bias (b)**: An offset term 偏差項
+- **Activation f(z)**: Non-linear function 非線性函數
+
+### 1.2 Activation Functions 激活函數
+
+```python
+import torch
+import torch.nn as nn
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = torch.linspace(-5, 5, 200)
+
+activations = {
+    'ReLU': torch.relu(x),
+    'Sigmoid': torch.sigmoid(x),
+    'Tanh': torch.tanh(x),
+}
+
+fig, axes = plt.subplots(1, 3, figsize=(14, 3))
+for ax, (name, y) in zip(axes, activations.items()):
+    ax.plot(x.numpy(), y.numpy(), linewidth=2, color='steelblue')
+    ax.set_title(name)
+    ax.axhline(0, color='gray', linewidth=0.5)
+    ax.axvline(0, color='gray', linewidth=0.5)
+    ax.set_xlabel('z')
+    ax.set_ylabel('f(z)')
+plt.tight_layout()
+plt.show()
+```
+
+| Activation | Formula | Range | Use Case |
+|:-:|:-:|:-:|:-:|
+| ReLU | max(0, z) | [0, ∞) | Hidden layers (default) |
+| Sigmoid | 1/(1+e⁻ᶻ) | (0, 1) | Binary output |
+| Tanh | (eᶻ−e⁻ᶻ)/(eᶻ+e⁻ᶻ) | (−1, 1) | Centered output |
+
+---
+
+## 2. Building an MLP in PyTorch
+## 2. 在 PyTorch 中建構 MLP
+
+### 2.1 MNIST Digit Classification MNIST 手寫數字分類
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+
+# Device setup 裝置設定
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Using: {device}")
+
+# Load MNIST dataset 載入 MNIST 資料集
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))
+])
+
+train_data = datasets.MNIST('./data', train=True, download=True, transform=transform)
+test_data = datasets.MNIST('./data', train=False, transform=transform)
+
+train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_data, batch_size=1000)
+```
+
+### 2.2 Define the Model 定義模型
+
+```python
+class MLP(nn.Module):
+    """Multi-Layer Perceptron for digit classification.
+    用於數字分類的多層感知機。
+    """
+    def __init__(self):
+        super().__init__()
+        self.flatten = nn.Flatten()
+        self.layers = nn.Sequential(
+            nn.Linear(28 * 28, 256),    # Input → Hidden 1
+            nn.ReLU(),
+            nn.Dropout(0.2),            # Regularization 正則化
+            nn.Linear(256, 128),         # Hidden 1 → Hidden 2
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(128, 10),          # Hidden 2 → Output (10 digits)
+        )
+    
+    def forward(self, x):
+        x = self.flatten(x)             # (batch, 1, 28, 28) → (batch, 784)
+        return self.layers(x)
+
+model = MLP().to(device)
+print(model)
+
+# Count parameters 計算參數數量
+total_params = sum(p.numel() for p in model.parameters())
+print(f"Total parameters: {total_params:,}")
+```
+
+### 2.3 Training Loop 訓練迴圈
+
+```python
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+loss_fn = nn.CrossEntropyLoss()
+
+def train_epoch(model, loader, optimizer, loss_fn, device):
+    """Train for one epoch. 訓練一個 epoch。"""
+    model.train()
+    total_loss, correct, total = 0, 0, 0
+    
+    for X_batch, y_batch in loader:
+        X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+        
+        # Forward pass 前向傳播
+        output = model(X_batch)
+        loss = loss_fn(output, y_batch)
+        
+        # Backward pass 反向傳播
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        
+        total_loss += loss.item() * len(y_batch)
+        correct += (output.argmax(1) == y_batch).sum().item()
+        total += len(y_batch)
+    
+    return total_loss / total, correct / total
+
+def evaluate(model, loader, loss_fn, device):
+    """Evaluate model on test data. 在測試資料上評估模型。"""
+    model.eval()
+    total_loss, correct, total = 0, 0, 0
+    
+    with torch.no_grad():
+        for X_batch, y_batch in loader:
+            X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+            output = model(X_batch)
+            loss = loss_fn(output, y_batch)
+            total_loss += loss.item() * len(y_batch)
+            correct += (output.argmax(1) == y_batch).sum().item()
+            total += len(y_batch)
+    
+    return total_loss / total, correct / total
+
+# Training 訓練
+n_epochs = 10
+history = {'train_loss': [], 'test_loss': [], 'train_acc': [], 'test_acc': []}
+
+for epoch in range(n_epochs):
+    train_loss, train_acc = train_epoch(model, train_loader, optimizer, loss_fn, device)
+    test_loss, test_acc = evaluate(model, test_loader, loss_fn, device)
+    
+    history['train_loss'].append(train_loss)
+    history['test_loss'].append(test_loss)
+    history['train_acc'].append(train_acc)
+    history['test_acc'].append(test_acc)
+    
+    print(f"Epoch {epoch+1}/{n_epochs} — "
+          f"Train Loss: {train_loss:.4f}, Acc: {train_acc:.3f} | "
+          f"Test Loss: {test_loss:.4f}, Acc: {test_acc:.3f}")
+```
+
+### 2.4 Visualize Training 視覺化訓練過程
+
+```python
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+axes[0].plot(history['train_loss'], label='Train')
+axes[0].plot(history['test_loss'], label='Test')
+axes[0].set_xlabel('Epoch')
+axes[0].set_ylabel('Loss')
+axes[0].set_title('Loss Curve')
+axes[0].legend()
+
+axes[1].plot(history['train_acc'], label='Train')
+axes[1].plot(history['test_acc'], label='Test')
+axes[1].set_xlabel('Epoch')
+axes[1].set_ylabel('Accuracy')
+axes[1].set_title('Accuracy Curve')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 3. Convolutional Neural Networks (CNN)
+## 3. 卷積神經網路 (CNN)
+
+CNNs are designed for grid-like data (images). They use convolutional filters to detect local patterns.
+
+CNN 專為網格狀資料（影像）設計，使用卷積濾波器偵測局部模式。
+
+```python
+class SimpleCNN(nn.Module):
+    """CNN for MNIST classification. 用於 MNIST 分類的 CNN。"""
+    def __init__(self):
+        super().__init__()
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(1, 16, kernel_size=3, padding=1),  # (1, 28, 28) → (16, 28, 28)
+            nn.ReLU(),
+            nn.MaxPool2d(2),                              # → (16, 14, 14)
+            nn.Conv2d(16, 32, kernel_size=3, padding=1),  # → (32, 14, 14)
+            nn.ReLU(),
+            nn.MaxPool2d(2),                              # → (32, 7, 7)
+        )
+        self.fc_layers = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(32 * 7 * 7, 128),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(128, 10),
+        )
+    
+    def forward(self, x):
+        x = self.conv_layers(x)
+        return self.fc_layers(x)
+
+cnn_model = SimpleCNN().to(device)
+print(f"CNN Parameters: {sum(p.numel() for p in cnn_model.parameters()):,}")
+```
+
+---
+
+## 4. Regularization Techniques 正則化技巧
+
+| Technique | Purpose | PyTorch |
+|-----------|---------|---------|
+| **Dropout** | Randomly zero neurons during training | `nn.Dropout(p=0.2)` |
+| **Batch Norm** | Normalize layer inputs | `nn.BatchNorm1d(n)` |
+| **Weight Decay** | L2 penalty on weights | `optim.Adam(..., weight_decay=1e-4)` |
+| **Early Stopping** | Stop when val loss increases | Manual implementation |
+
+---
+
+## 5. Lab: MNIST Classification
+## 5. 實作：MNIST 數字分類
+
+### Task 任務
+
+1. Train the MLP on MNIST and record test accuracy
+2. Train the CNN on MNIST and compare — which performs better and why?
+3. Experiment: What happens when you remove Dropout layers?
+4. Visualize some misclassified digits — what makes them hard?
+
+---
+
+## References 參考資料
+
+- **PyTorch Tutorials**: [https://pytorch.org/tutorials/beginner/basics/intro.html](https://pytorch.org/tutorials/beginner/basics/intro.html)
+- **Deep Learning Book** (Goodfellow et al.): [https://www.deeplearningbook.org/](https://www.deeplearningbook.org/)
+- **3Blue1Brown Neural Networks**: [https://www.3blue1brown.com/topics/neural-networks](https://www.3blue1brown.com/topics/neural-networks)
+- **MNIST Dataset**: [http://yann.lecun.com/exdb/mnist/](http://yann.lecun.com/exdb/mnist/)

@@ -1,7 +1,253 @@
-# Week 12: GPU Acceleration Tools\n# 第十二週：GPU 加速工具\n\n> **Date 日期**: 2026/05/14  \n> **Topic 主題**: High-Performance Computing 高效能運算\n\n---\n\n## Learning Objectives 學習目標\n\n1. 理解 CPU 與 GPU 之間在架構和應用上的核心差異。\n2. 熟悉如何在 Python 環境中利用 GPU 進行科學計算和機器學習，特別是 PyTorch Tensors 和 CuPy。\n3. 學習使用 Google Colab 等雲端 GPU 資源。\n4. 掌握在 PyTorch 中建立自訂訓練迴圈 (Custom Training Loops) 的方法。\n5. 初步了解機器學習模型部署 (Model Deployment) 的概念與挑戰。\n\n---\n\n## 1. CPU vs. GPU Architecture CPU 與 GPU 架構\n\n理解中央處理器 (CPU) 和圖形處理器 (GPU) 的不同架構，是選擇合適硬體進行運算的關鍵。\n\n-   **CPU (Central Processing Unit)**:\n    -   **設計**: 針對通用計算，具有少量強大、複雜的核心。\n    -   **優勢**: 擅長處理複雜的邏輯控制、串行任務和多種不同的指令。\n    -   **應用**: 作業系統、通用應用程式、資料庫等。\n-   **GPU (Graphics Processing Unit)**:\n    -   **設計**: 針對大規模並行計算，具有大量簡單、高效的核心。\n    -   **優勢**: 擅長處理可以分解為數千甚至數百萬個獨立小任務的運算 (例如矩陣乘法、影像處理)。\n    -   **應用**: 遊戲渲染、科學模擬、加密貨幣挖礦、以及深度學習模型訓練。\n\n**心理學研究中的重要性**: 在處理大型神經影像數據 (fMRI, EEG) 或訓練複雜的神經網路模型時，GPU 的並行處理能力可以將運算時間從數小時甚至數天縮短到數分鐘。\n\n---\n\n## 2. GPU Computing in Python Python 中的 GPU 運算\n\n### 2.1 PyTorch Tensors PyTorch 張量\n\nPyTorch 是一個開源機器學習框架，其核心資料結構是 `Tensor`，類似於 NumPy 的 `ndarray`，但可以在 GPU 上運行。\n\n-   **Tensor**: PyTorch 的基本資料單位，可以表示純量、向量、矩陣或更高維度的資料。\n-   **CUDA**: NVIDIA 的並行計算平台和程式設計模型，允許軟體開發者使用 GPU 進行通用計算。PyTorch 利用 CUDA 來在 NVIDIA GPU 上執行張量運算。\n\n```python\nimport torch\nimport time\n\n# Check if CUDA (GPU) is available\n# 檢查 CUDA (GPU) 是否可用\ndevice = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\nprint(f\"Using device: {device}\")\n\n# Create tensors on CPU and GPU\n# 在 CPU 和 GPU 上創建張量\nsize = 10000 # Large size for demonstration 為了示範的大尺寸\n\n# CPU Tensor\ntensor_cpu = torch.randn(size, size, device=\"cpu\")\n\n# GPU Tensor (if CUDA available)\ntensor_gpu = torch.randn(size, size, device=device)\n\n# Perform matrix multiplication on CPU\nstart_time = time.time()\nresult_cpu = torch.matmul(tensor_cpu, tensor_cpu)\nend_time = time.time()\nprint(f\"CPU matrix multiplication time: {end_time - start_time:.4f} seconds\")\n\n# Perform matrix multiplication on GPU\n# Note: First GPU operation might be slower due to setup\nstart_time = time.time()\nresult_gpu = torch.matmul(tensor_gpu, tensor_gpu)\n# Wait for GPU operations to complete before timing\n# 等待 GPU 操作完成後再計時\ntorch.cuda.synchronize()\nend_time = time.time()\nprint(f\"GPU matrix multiplication time: {end_time - start_time:.4f} seconds\")\n\n# Move tensor back to CPU for NumPy compatibility or further processing\n# 將張量移回 CPU 以兼容 NumPy 或進行進一步處理\nresult_cpu_from_gpu = result_gpu.to(\"cpu\")\nprint(f\"Result from GPU moved to CPU shape: {result_cpu_from_gpu.shape}\")\n```\n\n### 2.2 CuPy (NumPy on GPU) (Optional) CuPy (GPU 上的 NumPy) (選修)\n\nCuPy 是一個 NumPy 相容的陣列庫，利用 CUDA GPU 加速運算。如果您熟悉 NumPy 語法，CuPy 可以讓您輕鬆地將 NumPy 程式碼遷移到 GPU 上。\n\n```python\n# import cupy as cp # Uncomment if CuPy is installed\n# import numpy as np\n# import time\n\n# # Generate large random arrays on CPU and GPU\n# size_cp = 5000\n\n# # NumPy on CPU\n# arr_cpu = np.random.rand(size_cp, size_cp)\n# start_time_cpu = time.time()\n# result_cpu_cp = np.dot(arr_cpu, arr_cpu)\n# end_time_cpu = time.time()\n# print(f"NumPy CPU dot product time: {end_time_cpu - start_time_cpu:.4f} seconds")\n\n# # CuPy on GPU\n# # Requires a CUDA-enabled GPU and CuPy installed (pip install cupy-cudaXXX where XXX is your CUDA version)\n# if cp.cuda.is_available():\n#     arr_gpu = cp.random.rand(size_cp, size_cp)\n#     cp.cuda.Stream.null.synchronize() # Ensure data is on GPU\n#     start_time_gpu = time.time()\n#     result_gpu_cp = cp.dot(arr_gpu, arr_gpu)\n#     cp.cuda.Stream.null.synchronize() # Wait for GPU to finish\n#     end_time_gpu = time.time()\n#     print(f"CuPy GPU dot product time: {end_time_gpu - start_time_gpu:.4f} seconds")\n# else:\n#     print("CuPy requires a CUDA-enabled GPU and CuPy installed.")\n```\n\n### 2.3 Google Colab (雲端 GPU) Google Colab (Cloud GPUs)\n\nGoogle Colab 提供免費的雲端 GPU 資源，是學習和實驗深度學習的絕佳工具。它提供 Jupyter Notebook 環境，預裝了 PyTorch、TensorFlow 等主流框架。\n\n-   **如何啟用 GPU**: 在 Colab Notebook 中，點擊 `執行階段 (Runtime)` -> `變更執行階段類型 (Change runtime type)` -> 選擇 `GPU` 作為硬體加速器。\n\n---\n\n## 3. Custom Training Loops in PyTorch PyTorch 自訂訓練迴圈\n\n雖然 PyTorch 提供高階 API (如 `torch.nn`, `torch.optim`) 來簡化模型訓練，但理解並能建構自訂訓練迴圈對於深度學習的靈活性至關重要。\n\n一個典型的 PyTorch 訓練迴圈包括以下步驟：\n\n1.  **資料載入 (Load Data)**: 將資料轉換為 `torch.Tensor`，並使用 `DataLoader` 批次載入。
-2.  **模型定義 (Define Model)**: 建立一個繼承自 `torch.nn.Module` 的神經網路模型。
-3.  **損失函數 (Define Loss Function)**: 選擇適合任務的損失函數 (例如，分類任務的交叉熵損失 `nn.CrossEntropyLoss`，迴歸任務的均方誤差 `nn.MSELoss`)。
-4.  **優化器 (Define Optimizer)**: 選擇一個優化器來更新模型權重 (例如，`torch.optim.Adam`, `torch.optim.SGD`)。
-5.  **迭代訓練 (Training Loop)**: 對每個 epoch (整個資料集的一次遍歷) 和每個批次 (batch) 執行以下操作：\n    *   **前向傳播 (Forward Pass)**: 將輸入資料傳入模型，得到預測輸出。\n    *   **計算損失 (Calculate Loss)**: 比較預測輸出與真實標籤，計算損失。\n    *   **反向傳播 (Backward Pass)**: 計算損失對模型參數的梯度。\n    *   **權重更新 (Update Weights)**: 使用優化器更新模型參數。\n    *   **梯度歸零 (Zero Gradients)**: 在每次反向傳播前，將梯度歸零 (重要步驟，防止梯度累積)。\n\n```python\nimport torch\nimport torch.nn as nn\nimport torch.optim as optim\nfrom torch.utils.data import DataLoader, TensorDataset\n\n# 1. Generate synthetic data\n# 1. 生成合成資料\nX_toy = torch.randn(100, 10) # 100 samples, 10 features\ny_toy = (torch.sum(X_toy[:, :5], axis=1) > 0).float().reshape(-1, 1) # Binary classification\n\n# Move data to GPU if available\n# 將資料移至 GPU (如果可用)\ndevice = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\nX_toy = X_toy.to(device)\ny_toy = y_toy.to(device)\n\n# Create DataLoader\ndataset = TensorDataset(X_toy, y_toy)\ndataloader = DataLoader(dataset, batch_size=16, shuffle=True)\n\n# 2. Define a simple neural network model\n# 2. 定義一個簡單的神經網路模型\nclass SimpleNN(nn.Module):\n    def __init__(self, input_dim):\n        super(SimpleNN, self).__init__()\n        self.layer1 = nn.Linear(input_dim, 32)\n        self.relu = nn.ReLU()\n        self.layer2 = nn.Linear(32, 1)\n        self.sigmoid = nn.Sigmoid()\n    \n    def forward(self, x):\n        x = self.layer1(x)\n        x = self.relu(x)\n        x = self.layer2(x)\n        x = self.sigmoid(x)\n        return x\n\nmodel = SimpleNN(input_dim=10).to(device)\n\n# 3. Define Loss Function and Optimizer\n# 3. 定義損失函數和優化器\ncriterion = nn.BCELoss() # Binary Cross-Entropy Loss for binary classification\noptimizer = optim.Adam(model.parameters(), lr=0.001)\n\n# 4. Custom Training Loop\n# 4. 自訂訓練迴圈\nn_epochs = 10\nfor epoch in range(n_epochs):\n    for batch_idx, (data, target) in enumerate(dataloader):\n        # Zero gradients\n        optimizer.zero_grad()\n        \n        # Forward pass\n        outputs = model(data)\n        loss = criterion(outputs, target)\n        \n        # Backward pass and optimize\n        loss.backward()\n        optimizer.step()\n    \n    print(f\"Epoch [{epoch+1}/{n_epochs}], Loss: {loss.item():.4f}\")\n\nprint(\"Training complete using custom loop.\")\n\n# Evaluate (simple example)\nwith torch.no_grad():\n    model.eval() # Set model to evaluation mode\n    total = 0\n    correct = 0\n    for data, target in dataloader:\n        outputs = model(data)\n        predicted = (outputs > 0.5).float()\n        total += target.size(0)\n        correct += (predicted == target).sum().item()\n    print(f\"Accuracy on synthetic data: {(correct / total):.2f}\")\n```\n\n---\n\n## 4. Model Deployment 模型部署\n\n模型部署是將訓練好的機器學習模型整合到生產環境中，使其能夠為實際應用提供服務的過程。\n\n-   **挑戰**: 跨平台相容性、擴展性、延遲、模型版本控制、監控。\n-   **常見方法**:\n    -   **API 服務**: 將模型打包成 RESTful API，通過 HTTP 請求進行預測。例如使用 Flask/Django 搭建 Web 服務器。\n    -   **邊緣部署 (Edge Deployment)**: 將模型直接部署到設備上 (如手機、物聯網設備)，在本地進行推斷，減少延遲並保護隱私。\n    -   **雲端服務**: 利用雲平台 (如 Google Cloud AI Platform, AWS SageMaker, Azure Machine Learning) 提供的 MLOps 工具鏈，實現模型的訓練、部署和管理。\n\n**心理學研究中的應用**: 將預測患者認知功能退化的模型部署到臨床決策支持系統中；將基於 fMRI 數據實時預測情緒狀態的模型集成到虛擬實境治療方案中。\n\n```python\n# Conceptual example of a simple Flask API for model inference\n# 簡單 Flask API 用於模型推斷的概念範例\n# from flask import Flask, request, jsonify\n# import joblib # For loading scikit-learn models\n# import torch # For loading PyTorch models\n\n# app = Flask(__name__)\n\n# # Load your trained model (e.g., a scikit-learn model or PyTorch model)\n# # 加載您訓練好的模型（例如，scikit-learn 模型或 PyTorch 模型）\n# # model_path = \'./my_trained_model.pkl\' # For scikit-learn\n# # model = joblib.load(model_path)\n\n# # For PyTorch, you'd load state_dict and then model = MyPyTorchModel().to(device); model.load_state_dict(...)\n\n# @app.route(\'/predict\', methods=[\'POST\'])\n# def predict():\n#     data = request.get_json(force=True)\n#     # Preprocess input data here if necessary\n#     # 如果需要，在此處預處理輸入資料\n#     input_features = np.array(data[\'features\']).reshape(1, -1)\n#     \n#     # Make prediction\n#     prediction = model.predict(input_features)[0]\n#     \n#     return jsonify({\'prediction\': prediction.tolist()})\n\n# if __name__ == \"__main__\":\n#     # app.run(debug=True) # Run locally\n#     pass\n\nprint(\"Conceptual outline for model deployment as an API service.\")\n```\n\n---\n\n## 5. Lab Activity: GPU vs. CPU Benchmark\n## 5. 實作活動：GPU 與 CPU 效能基準測試\n\n**目標**: 寫一個腳本來執行大規模的矩陣乘法，並測量和比較其在 CPU (使用 NumPy) 和 GPU (使用 PyTorch) 上的執行時間。\n\n**Goal**: Write a script that performs massive matrix multiplication and measure and compare its execution time on CPU (using NumPy) versus GPU (using PyTorch).\n\n### 任務 Task\n\n1.  定義一個大型矩陣尺寸 (例如，5000x5000)。\n2.  生成兩個隨機矩陣，一個用於 CPU (NumPy)，一個用於 GPU (PyTorch Tensor)。\n3.  計算 NumPy 在 CPU 上進行矩陣乘法所需的時間。\n4.  如果 GPU 可用，計算 PyTorch 在 GPU 上進行矩陣乘法所需的時間，並確保在計時前進行 `torch.cuda.synchronize()`。\n5.  列印兩種情況下的執行時間，並進行比較。
+# Week 12: GPU Acceleration Tools
+# 第十二週：GPU 加速工具
 
-```python\nimport numpy as np\nimport torch\nimport time\n\n# 1. Define a large matrix size\n# 1. 定義一個大型矩陣尺寸\nmatrix_size = 5000\n\nprint(f\"Benchmarking matrix multiplication for {matrix_size}x{matrix_size} matrices...\")\n\n# 2. Generate two random matrices for CPU (NumPy) and GPU (PyTorch Tensor)\n# 2. 生成兩個隨機矩陣，一個用於 CPU (NumPy)，一個用於 GPU (PyTorch Tensor)\n\n# CPU data (NumPy)\nA_cpu = np.random.rand(matrix_size, matrix_size)\nB_cpu = np.random.rand(matrix_size, matrix_size)\n\n# GPU data (PyTorch)\ndevice = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\nprint(f\"Using device for PyTorch: {device}\")\n\nA_gpu = torch.from_numpy(A_cpu).to(device) # Convert NumPy to Torch Tensor and move to device\nB_gpu = torch.from_numpy(B_cpu).to(device)\n\n# 3. Measure NumPy CPU matrix multiplication time\n# 3. 測量 NumPy CPU 矩陣乘法所需的時間\nstart_time_cpu = time.time()\nresult_cpu_np = np.dot(A_cpu, B_cpu)\nend_time_cpu = time.time()\nprint(f\"\nNumPy (CPU) multiplication time: {end_time_cpu - start_time_cpu:.4f} seconds\")\n\n# 4. Measure PyTorch GPU matrix multiplication time (if GPU available)\n# 4. 測量 PyTorch GPU 矩陣乘法所需的時間（如果 GPU 可用）\nif device.type == \'cuda\':\n    start_time_gpu = time.time()\n    result_gpu_torch = torch.matmul(A_gpu, B_gpu)\n    torch.cuda.synchronize() # Wait for GPU to finish operations\n    end_time_gpu = time.time()\n    print(f\"PyTorch (GPU) multiplication time: {end_time_gpu - start_time_gpu:.4f} seconds\")\n    print(f\"\nGPU was {(end_time_cpu - start_time_cpu) / (end_time_gpu - start_time_gpu):.1f}x faster than CPU.\")\nelse:\n    print(\"GPU is not available for PyTorch benchmark.\")\n\nprint(\"Benchmark complete.\")\n```\n\n---\n\n## 6. References 參考資料\n\n- **PyTorch Documentation**: [https://pytorch.org/docs/stable/index.html](https://pytorch.org/docs/stable/index.html)\n- **NumPy Documentation**: [https://numpy.org/doc/stable/](https://numpy.org/doc/stable/)\n- **Google Colab**: [https://colab.research.google.com/](https://colab.research.google.com/)\n- **CuPy (NumPy on GPU)**: [https://cupy.dev/](https://cupy.dev/)\n- **CPU vs. GPU Explained**: [https://www.nvidia.com/en-us/gpu-cloud/what-is-gpu-computing/](https://www.nvidia.com/en-us/gpu-cloud/what-is-gpu-computing/)\n- **ML Model Deployment Guide**: [https://www.mlflow.org/docs/latest/llms/llm-deployments/index.html](https://www.mlflow.org/docs/latest/llms/llm-deployments/index.html)\n
+> **Date 日期**: 2026/05/14  
+> **Topic 主題**: High-Performance Computing 高效能運算
+
+---
+
+## Learning Objectives 學習目標
+
+1. 理解 **CPU vs. GPU** 的架構差異與各自的適用場景
+2. 學會使用 **Google Colab** 存取雲端 GPU
+3. 掌握 **PyTorch Tensors** 的基本操作與 GPU 加速
+4. 實作 CPU vs. GPU 效能基準測試
+
+---
+
+## 1. CPU vs. GPU Architecture
+## 1. CPU 與 GPU 架構
+
+| Feature | CPU | GPU |
+|---------|-----|-----|
+| Cores | Few (4–16) powerful cores | Thousands of small cores |
+| Best for | Sequential tasks, logic | Parallel computation |
+| Memory | Large shared RAM | Smaller dedicated VRAM |
+| Use case | Data loading, I/O | Matrix multiplication, training |
+
+**Analogy 類比**: 
+- CPU = One expert chef cooking complex dishes sequentially
+- GPU = A thousand assembly-line workers each doing simple tasks simultaneously
+
+In deep learning, most operations (matrix multiplication, convolution) can be parallelized — making GPUs essential.
+
+在深度學習中，大多數操作（矩陣乘法、卷積）都可以平行化 — 這使得 GPU 變得不可或缺。
+
+---
+
+## 2. Google Colab — Free Cloud GPUs
+## 2. Google Colab — 免費雲端 GPU
+
+**Getting started 入門:**
+
+1. Go to [colab.research.google.com](https://colab.research.google.com)
+2. `Runtime → Change runtime type → GPU (T4)`
+3. Verify GPU availability:
+
+```python
+# Check GPU availability in Colab
+# 在 Colab 中確認 GPU 可用性
+import torch
+
+if torch.cuda.is_available():
+    device = torch.device('cuda')
+    print(f"GPU available: {torch.cuda.get_device_name(0)}")
+    print(f"GPU memory: {torch.cuda.get_device_properties(0).total_mem / 1e9:.1f} GB")
+else:
+    device = torch.device('cpu')
+    print("No GPU available, using CPU")
+
+print(f"Using device: {device}")
+```
+
+---
+
+## 3. PyTorch Tensors & GPU Operations
+## 3. PyTorch Tensors 與 GPU 操作
+
+### 3.1 Tensor Basics 基本張量操作
+
+```python
+import torch
+import numpy as np
+
+# Create tensors 建立張量
+a = torch.tensor([1.0, 2.0, 3.0])
+b = torch.zeros(3, 4)         # 3×4 matrix of zeros
+c = torch.randn(3, 4)         # Random normal
+d = torch.arange(0, 10, 0.5)  # Range
+
+print(f"a: {a}")
+print(f"b shape: {b.shape}")
+print(f"c:\n{c}")
+
+# Convert between NumPy and PyTorch
+# NumPy 與 PyTorch 之間的轉換
+np_array = np.array([[1, 2], [3, 4]])
+tensor = torch.from_numpy(np_array).float()
+back_to_np = tensor.numpy()
+
+# Basic operations 基本操作
+x = torch.randn(3, 3)
+y = torch.randn(3, 3)
+
+print(f"Element-wise multiply: {x * y}")
+print(f"Matrix multiply: {x @ y}")
+print(f"Sum: {x.sum()}")
+print(f"Mean per column: {x.mean(dim=0)}")
+```
+
+### 3.2 Moving Data to GPU 將資料移至 GPU
+
+```python
+# Create tensor on CPU, then move to GPU
+# 在 CPU 上建立張量，然後移至 GPU
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+x_cpu = torch.randn(1000, 1000)
+x_gpu = x_cpu.to(device)       # Move to GPU
+print(f"x_cpu device: {x_cpu.device}")
+print(f"x_gpu device: {x_gpu.device}")
+
+# Operations on GPU tensors 在 GPU 張量上的操作
+y_gpu = torch.randn(1000, 1000, device=device)  # Create directly on GPU
+z_gpu = x_gpu @ y_gpu  # Matrix multiply on GPU
+
+# Move result back to CPU for NumPy/plotting
+# 將結果移回 CPU 以使用 NumPy/繪圖
+z_cpu = z_gpu.cpu()
+z_np = z_cpu.numpy()
+```
+
+---
+
+## 4. Benchmark: CPU vs. GPU
+## 4. 效能基準測試：CPU vs. GPU
+
+```python
+import torch
+import time
+
+def benchmark_matmul(size, device, n_runs=10):
+    """Benchmark matrix multiplication on a given device.
+    在指定裝置上對矩陣乘法進行基準測試。
+    """
+    a = torch.randn(size, size, device=device)
+    b = torch.randn(size, size, device=device)
+    
+    # Warm-up run 預熱
+    _ = a @ b
+    if device.type == 'cuda':
+        torch.cuda.synchronize()
+    
+    # Timed runs 計時執行
+    times = []
+    for _ in range(n_runs):
+        start = time.perf_counter()
+        _ = a @ b
+        if device.type == 'cuda':
+            torch.cuda.synchronize()  # Wait for GPU to finish
+        elapsed = time.perf_counter() - start
+        times.append(elapsed)
+    
+    return np.mean(times), np.std(times)
+
+# Run benchmarks 執行基準測試
+sizes = [512, 1024, 2048, 4096]
+results = []
+
+for size in sizes:
+    cpu_mean, cpu_std = benchmark_matmul(size, torch.device('cpu'))
+    print(f"Size {size}x{size} — CPU: {cpu_mean*1000:.1f} ms")
+    
+    if torch.cuda.is_available():
+        gpu_mean, gpu_std = benchmark_matmul(size, torch.device('cuda'))
+        speedup = cpu_mean / gpu_mean
+        print(f"Size {size}x{size} — GPU: {gpu_mean*1000:.1f} ms (Speedup: {speedup:.1f}x)")
+        results.append({'size': size, 'cpu_ms': cpu_mean*1000, 'gpu_ms': gpu_mean*1000, 'speedup': speedup})
+
+# Visualize results 視覺化結果
+if results:
+    import matplotlib.pyplot as plt
+    df_bench = pd.DataFrame(results)
+    
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+    
+    axes[0].bar(range(len(sizes)), df_bench['cpu_ms'], width=0.35, label='CPU', color='#e74c3c')
+    axes[0].bar([x+0.35 for x in range(len(sizes))], df_bench['gpu_ms'], width=0.35, label='GPU', color='#2ecc71')
+    axes[0].set_xticks([x+0.175 for x in range(len(sizes))])
+    axes[0].set_xticklabels([f'{s}²' for s in sizes])
+    axes[0].set_ylabel('Time (ms)')
+    axes[0].set_title('Matrix Multiplication Time')
+    axes[0].legend()
+    axes[0].set_yscale('log')
+    
+    axes[1].plot(sizes, df_bench['speedup'], 'o-', color='steelblue', linewidth=2)
+    axes[1].set_xlabel('Matrix Size')
+    axes[1].set_ylabel('GPU Speedup (×)')
+    axes[1].set_title('GPU vs. CPU Speedup')
+    
+    plt.tight_layout()
+    plt.show()
+```
+
+---
+
+## 5. Custom Training Loop (Preview)
+## 5. 自訂訓練迴圈（預習）
+
+A preview of what Week 13 will cover in depth — the basic PyTorch training pattern:
+
+預覽第 13 週將深入探討的內容 — 基本 PyTorch 訓練模式：
+
+```python
+import torch.nn as nn
+import torch.optim as optim
+
+# Simple model 簡單模型
+model = nn.Sequential(
+    nn.Linear(10, 32),
+    nn.ReLU(),
+    nn.Linear(32, 1)
+).to(device)
+
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+loss_fn = nn.MSELoss()
+
+# Training loop 訓練迴圈
+X_dummy = torch.randn(100, 10, device=device)
+y_dummy = torch.randn(100, 1, device=device)
+
+for epoch in range(5):
+    # Forward pass 前向傳播
+    predictions = model(X_dummy)
+    loss = loss_fn(predictions, y_dummy)
+    
+    # Backward pass 反向傳播
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    
+    print(f"Epoch {epoch+1}: Loss = {loss.item():.4f}")
+```
+
+---
+
+## 6. Lab: CPU vs. GPU Benchmark
+## 6. 實作：CPU vs. GPU 基準測試
+
+### Task 任務
+
+1. Open Google Colab and enable GPU runtime
+2. Run the benchmark code above with matrix sizes [256, 512, 1024, 2048, 4096, 8192]
+3. Create a bar chart comparing CPU vs. GPU times
+4. Determine: At what matrix size does the GPU become faster? Why?
+
+---
+
+## References 參考資料
+
+- **PyTorch Documentation**: [https://pytorch.org/docs/stable/](https://pytorch.org/docs/stable/)
+- **Google Colab**: [https://colab.research.google.com/](https://colab.research.google.com/)
+- **CUDA Programming Guide**: [https://docs.nvidia.com/cuda/](https://docs.nvidia.com/cuda/)
+- **PyTorch Tutorials**: [https://pytorch.org/tutorials/](https://pytorch.org/tutorials/)

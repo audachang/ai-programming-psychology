@@ -1,3 +1,248 @@
-# Week 14: Large Language Model (LLM)\n# 第十四週：大型語言模型\n\n> **Date 日期**: 2026/05/28  \n> **Topic 主題**: NLP in Research 科學研究中的自然語言處理\n\n---\n\n## Learning Objectives 學習目標\n\n1. 理解大型語言模型 (Large Language Models, LLMs) 的核心概念與發展。\n2. 熟悉 Transformer 架構，特別是注意力機制 (Attention Mechanism) 的原理。\n3. 學習使用 Hugging Face `transformers` 函式庫來載入和應用預訓練的 LLMs。\n4. 掌握提示工程 (Prompt Engineering) 的基本技巧，用於引導 LLMs 執行特定研究任務。\n5. 探索 LLMs 在心理學研究中的應用潛力，如文本生成和定性資料分析。\n\n---\n\n## 1. Introduction to Large Language Models (LLMs)\n## 1. 大型語言模型 (LLMs) 導論\n\n大型語言模型是近年來人工智慧領域的突破性進展，它們是基於海量文本數據訓練的深度學習模型，能夠理解、生成和處理人類語言。\n\n### 1.1 From RNNs to Transformers 從 RNN 到 Transformer\n\n-   **循環神經網路 (Recurrent Neural Networks, RNNs)**:\n    -   早期用於序列資料 (如文本) 的模型，能夠處理變長輸入，並在不同時間步之間共享權重。\n    -   **問題**: 存在梯度消失/爆炸問題，難以捕捉長距離依賴關係。\n    -   **改進**: LSTM (Long Short-Term Memory) 和 GRU (Gated Recurrent Unit) 解決了部分長距離依賴問題。\n\n-   **注意力機制 (Attention Mechanism)**:\n    -   允許模型在處理序列資料時，動態地聚焦於輸入序列中的特定部分，賦予不同部分不同的權重。\n    -   解決了 RNN/LSTM 無法有效處理長序列和難以並行化的問題。\n\n-   **Transformer 架構 (Transformer Architecture)**:\n    -   由 Google 在 2017 年提出，完全基於注意力機制 (Self-Attention)，完全放棄了循環和卷積結構。\n    -   **優勢**: 極高的並行性，能夠有效處理長序列，成為當前 LLMs 的主流架構 (例如 BERT, GPT 系列)。\n    -   **心理學應用**: 對於分析序列性行為 (如語言對話、決策過程) 或長篇文本資料 (如日記、臨床訪談記錄) 具有巨大潛力。\n\n```python\n# Conceptual illustration of Attention Mechanism (simplified)\n# 注意力機制的概念性圖示 (簡化)\nimport numpy as np\n\ndef simple_attention(query_vector, key_matrix, value_matrix):\n    # Simulate dot product attention scores\n    # 模擬點積注意力分數\n    attention_scores = np.dot(key_matrix, query_vector) # Higher score -> more relevant\n    attention_weights = np.exp(attention_scores) / np.sum(np.exp(attention_scores))\n    \n    # Weighted sum of values\n    context_vector = np.dot(attention_weights, value_matrix)\n    return context_vector, attention_weights\n\n# Example: Querying for relevant info in a short text\n# 範例：查詢短文本中的相關資訊\nquery = np.array([0.8, 0.2]) # e.g., looking for 'emotion'\nkeys = np.array([\n    [0.9, 0.1], # \'feeling'\n    [0.1, 0.9], # \'logic'\n    [0.7, 0.3]  # \'sadness'\n])\nvalues = np.array([\n    [10], # associated value for 'feeling'\n    [ 1], # associated value for \'logic'\n    [ 8]  # associated value for \'sadness'\n])\n\ncontext, weights = simple_attention(query, keys, values)\nprint(f\"Query vector: {query}\")\nprint(f\"Attention Weights: {weights.flatten():.2f}\") # Weights show where model \'focused\'\nprint(f\"Context Vector: {context.flatten()[0]:.2f}\")\n\n# Output indicates higher weight on 'feeling' and 'sadness' when query is about emotion.\n# 輸出顯示當查詢關於情緒時，'feeling' 和 'sadness' 獲得更高的權重。\n```\n\n---\n\n## 2. Hugging Face `transformers` Library Hugging Face `transformers` 函式庫\n\nHugging Face `transformers` 是一個廣泛使用的函式庫，提供了數千個預訓練模型，用於各種自然語言處理 (NLP) 任務，包括文本分類、命名實體識別、問答、文本生成等。\n\n### 2.1 Key Components 關鍵組件\n\n-   **AutoClasses**: `AutoModel`, `AutoTokenizer`, `AutoConfig` 等類別允許我們根據模型名稱自動載入正確的模型架構、詞彙表和配置。\n-   **Tokenizer (分詞器)**: 將原始文本轉換為模型可以理解的數值序列 (tokens)。\n-   **Model (模型)**: 預訓練的 Transformer 模型 (如 BERT, GPT-2, T5 等)。\n\n**心理學應用**: 使用預訓練模型對大量的臨床文本 (如病人病歷、治療師筆記) 進行情緒分析、關鍵詞提取；生成用於心理實驗的文本刺激。\n\n```python\nfrom transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification\nimport torch\n\nprint(f\"Hugging Face Transformers Version: {transformers.__version__}\")\n\n# 1. Using a high-level pipeline for sentiment analysis\n# 1. 使用高階管道進行情緒分析\nsentiment_pipeline = pipeline(\"sentiment-analysis\")\n\ntext1 = \"我對這個研究結果感到非常興奮！\" # I am very excited about this research result!\ntext2 = \"實驗的過程非常繁瑣且令人沮喪。\" # The experimental process was very tedious and frustrating.\n\nresults = sentiment_pipeline([text1, text2])\nfor i, res in enumerate(results):\n    print(f\"Text {i+1}: Label = {res[\'label\']}, Score = {res[\'score\']:.2f}\")\n\n# 2. Loading a specific model and tokenizer (more control)\n# 2. 載入特定模型和分詞器（更高的控制權）\nmodel_name = \"distilbert-base-uncased-finetuned-sst-2-english\"\ntokenizer = AutoTokenizer.from_pretrained(model_name)\nmodel = AutoModelForSequenceClassification.from_pretrained(model_name)\n\n# Example: manual tokenization and inference\n# 範例：手動分詞和推斷\ntext_to_analyze = \"This psychology experiment was surprisingly insightful.\"\ninputs = tokenizer(text_to_analyze, return_tensors=\"pt\") # Return PyTorch tensors\n\nwith torch.no_grad():\n    logits = model(**inputs).logits\n\npredicted_class_id = logits.argmax().item()\npredicted_label = model.config.id2label[predicted_class_id]\nprint(f\"\nManual Inference: Text = \\\"{text_to_analyze}\\\", Predicted Label = {predicted_label}, Logits = {logits.flatten().tolist()}\")\n\n# This model is fine-tuned for English sentiment. For Chinese, you'd need a Chinese-specific model.\n# 這個模型是針對英文情緒分析進行微調的。對於中文，您需要一個中文專用模型。\n```\n\n---\n\n## 3. Prompt Engineering for Research 研究中的提示工程\n\n提示工程 (Prompt Engineering) 是設計和優化輸入給 LLMs 的文本提示，以使其生成所需輸出結果的藝術和科學。對於研究，精心設計的提示對於提取特定資訊或引導模型進行複雜推理至關重要。\n\n-   **核心原則**:\n    -   **清晰明確**: 具體說明您想要什麼。\n    -   **提供範例 (Few-shot Learning)**: 提供幾個輸入-輸出範例，幫助模型理解任務。\n    -   **角色設定 (Role-playing)**: 讓模型扮演特定角色 (如「你是一位經驗豐富的心理學家」)。\n    -   **鏈式思考 (Chain-of-Thought)**: 要求模型逐步推理，特別是對於複雜問題。\n    -   **限制輸出格式**: 指定輸出應為 JSON、列表等。\n\n**心理學研究中的應用**: 自動生成符合特定情緒或認知偏向的實驗刺激文本；要求 LLM 總結一篇研究論文的關鍵發現；使用 LLM 分析開放式問卷回答並提取主題。\n\n```python\n# Conceptual example of prompt engineering for a research task\n# 用於研究任務的提示工程概念範例\ndef generate_research_prompt(topic, details, example_input=\"\", example_output=\"\"):\n    prompt = f\"你是一位專注於認知神經科學的研究助理。\n\\n請根據以下研究主題和細節，生成一份實驗刺激文本。確保文本符合學術嚴謹性並適用於實驗情境。\\n\n研究主題: {topic}\n細節: {details}\n\n如果提供範例，請參考其風格和格式。\n\n輸入範例:\n{example_input}\n\n輸出範例:\n{example_output}\n\n請生成刺激文本:\"\n    return prompt\n\n# Example: Generating a prompt for an emotion recognition experiment\n# 範例：為情緒識別實驗生成提示\nresearch_topic = \"面部表情對情緒判斷的影響\" # Impact of facial expressions on emotion judgment\ndetails = \"需要生成描述不同情緒情境的簡短文字，每段約 20 字，包含快樂、悲傷、憤怒三種情緒，每種情緒提供兩個情境。\" # Generate short text descriptions of different emotional scenarios, ~20 words each, for happy, sad, angry emotions, two scenarios per emotion.\n\nexample_input = \"情緒: 快樂, 情境描述: 陽光灑在窗邊，小貓在打盹。\" # Emotion: Happy, Scenario: Sunlight by the window, a kitten dozing.\nexample_output = \"情緒: 快樂\n情境: 陽光輕柔灑落，小貓在窗邊慵懶打盹，帶來一室寧靜與溫暖。\n---\n情緒: 悲傷\n情境: 冰冷的雨滴敲打窗戶，舊照片在手中，心頭湧上揮之不去的哀愁。\" # Emotion: Sad, Scenario: Cold raindrops tap on the window, old photos in hand, a persistent sorrow washes over the heart.\n\nfull_prompt = generate_research_prompt(research_topic, details, example_input, example_output)\nprint(\"\n--- Generated Prompt Example ---\")\nprint(full_prompt)\n\n# You would then send this 'full_prompt' to an LLM API.\n# 接著您會將這個 'full_prompt' 發送到 LLM API。\n```\n\n---\n\n## 4. Lab Activity: Sentiment Analysis with Hugging Face\n## 4. 實作活動：使用 Hugging Face 進行情緒分析\n\n**目標**: 建構一個管道，使用 Hugging Face 的預訓練 BERT 模型對一個文本資料集執行情緒分析。
+# Week 14: Large Language Models
+# 第十四週：大型語言模型
 
-**Goal**: Build a pipeline that uses a pre-trained BERT model from Hugging Face to perform Sentiment Analysis on a text dataset.\n\n### 任務 Task\n\n1.  準備一個簡短的英文句子列表，內容包含積極、消極和中性情緒。\n2.  使用 `transformers` 庫的 `pipeline` 函數載入預訓練的情緒分析模型。\n3.  對句子列表執行情緒分析，並列印每個句子的標籤 (label) 和分數 (score)。\n4.  嘗試手動載入 `AutoTokenizer` 和 `AutoModelForSequenceClassification`，並對其中一個句子進行分詞和預測，以了解底層機制。\n\n```python\nfrom transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification\nimport torch\nimport pandas as pd\n\n# 1. Prepare a list of English sentences\n# 1. 準備一個英文句子列表\ntexts_for_sentiment = [\n    \"This research project is incredibly exciting and promising.\", # Positive\n    \"The experimental setup was frustrating and full of errors.\", # Negative\n    \"The participant pressed a button after seeing the stimulus.\", # Neutral\n    \"I am so happy with the progress we made today!\", # Positive\n    \"The results were inconclusive, causing more questions than answers.\" # Negative\n]\n\n# 2. Load a pre-trained sentiment analysis pipeline\n# 2. 載入預訓練的情緒分析管道\nsentiment_analyzer = pipeline(\"sentiment-analysis\")\n\nprint(\"--- Pipeline-based Sentiment Analysis ---\")\nresults_pipeline = sentiment_analyzer(texts_for_sentiment)\nfor i, res in enumerate(results_pipeline):\n    print(f\"Text: \\\"{texts_for_sentiment[i]}\\\", Label: {res[\'label\']}, Score: {res[\'score\']:.4f}\")\n\n# 3. Manual loading and inference for a specific model\n# 3. 手動載入和推斷特定模型\nmodel_name_manual = \"distilbert-base-uncased-finetuned-sst-2-english\" # A common sentiment model\ntokenizer_manual = AutoTokenizer.from_pretrained(model_name_manual)\nmodel_manual = AutoModelForSequenceClassification.from_pretrained(model_name_manual)\n\nprint(\"\n--- Manual Tokenization and Inference (for first sentence) ---\")\nsentence_to_manual_analyze = texts_for_sentiment[0]\ninputs_manual = tokenizer_manual(sentence_to_manual_analyze, return_tensors=\"pt\")\n\nwith torch.no_grad():\n    logits_manual = model_manual(**inputs_manual).logits\n\npredicted_class_id_manual = logits_manual.argmax().item()\npredicted_label_manual = model_manual.config.id2label[predicted_class_id_manual]\n\n# Convert logits to probabilities using softmax if needed, or just use argmax for class\nprobabilities_manual = torch.softmax(logits_manual, dim=1)[0].tolist()\n\nprint(f\"Text: \\\"{sentence_to_manual_analyze}\\\")\nprint(f\"Predicted Label: {predicted_label_manual}\")\nprint(f\"Probabilities: {probabilities_manual}\")\nprint(\"\nLab Activity Complete.\")\n```\n\n---\n\n## 5. References 參考資料\n\n- **Hugging Face Transformers Documentation**: [https://huggingface.co/docs/transformers/index](https://huggingface.co/docs/transformers/index)\n- **Attention Is All You Need Paper**: Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., ... & Polosukhin, I. (2017). *Attention Is All You Need*. Advances in Neural Information Processing Systems, 30.\n- **Prompt Engineering Guide**: [https://www.promptingguide.ai/](https://www.promptingguide.ai/)\n- **BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding**: Devlin, J., Chang, M. W., Lee, K., & Toutanova, K. (2019). *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding*. Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), 4171-4186.\n
+> **Date 日期**: 2026/05/28  
+> **Topic 主題**: NLP in Research 研究中的自然語言處理
+
+---
+
+## Learning Objectives 學習目標
+
+1. 理解 **RNN** 與序列資料的處理方式
+2. 掌握 **注意力機制** (Attention) 與 **Transformer** 架構的核心概念
+3. 使用 Hugging Face `transformers` 進行文本分析
+4. 學會使用 LLM 進行研究相關的 Prompt Engineering
+
+---
+
+## 1. From RNNs to Transformers
+## 1. 從 RNN 到 Transformer
+
+### 1.1 Recurrent Neural Networks (RNN)
+
+RNNs process sequences one element at a time, maintaining a hidden state.
+
+RNN 一次處理序列中的一個元素，並維持一個隱藏狀態。
+
+```
+x₁ → [h₁] → x₂ → [h₂] → x₃ → [h₃] → output
+```
+
+**Limitations 限制:**
+- 長序列的梯度消失 (Vanishing Gradients)
+- 無法平行處理 — 訓練速度慢
+
+### 1.2 Attention Mechanism 注意力機制
+
+Instead of compressing the entire sequence into one hidden state, attention lets the model "look back" at all positions.
+
+注意力機制讓模型可以「回顧」所有位置，而非將整個序列壓縮成一個隱藏狀態。
+
+**Key idea 核心概念:** For each output position, compute a weighted sum over all input positions. The weights (attention scores) indicate relevance.
+
+```python
+import torch
+import torch.nn.functional as F
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Simplified self-attention example
+# 簡化的自注意力範例
+def self_attention(Q, K, V):
+    """Scaled dot-product attention.
+    縮放點積注意力。
+    """
+    d_k = Q.shape[-1]
+    scores = Q @ K.transpose(-2, -1) / (d_k ** 0.5)  # Scaled scores
+    weights = F.softmax(scores, dim=-1)                 # Attention weights
+    output = weights @ V                                # Weighted values
+    return output, weights
+
+# Example: 4 tokens, embedding dim = 8
+seq_len, d_model = 4, 8
+Q = K = V = torch.randn(1, seq_len, d_model)
+
+output, attn_weights = self_attention(Q, K, V)
+
+# Visualize attention weights 視覺化注意力權重
+fig, ax = plt.subplots(figsize=(5, 4))
+tokens = ['Token1', 'Token2', 'Token3', 'Token4']
+im = ax.imshow(attn_weights[0].detach().numpy(), cmap='Blues')
+ax.set_xticks(range(seq_len))
+ax.set_yticks(range(seq_len))
+ax.set_xticklabels(tokens)
+ax.set_yticklabels(tokens)
+ax.set_xlabel('Key')
+ax.set_ylabel('Query')
+ax.set_title('Self-Attention Weights')
+plt.colorbar(im)
+plt.tight_layout()
+plt.show()
+```
+
+### 1.3 The Transformer Architecture
+
+| Component | Purpose |
+|-----------|---------|
+| **Multi-Head Attention** | Multiple parallel attention computations |
+| **Feed-Forward Network** | Non-linear transformation per position |
+| **Layer Normalization** | Stabilizes training |
+| **Positional Encoding** | Injects sequence order information |
+
+---
+
+## 2. Hugging Face Transformers
+## 2. Hugging Face Transformers 函式庫
+
+### 2.1 Pipeline API — Quick Start 快速入門
+
+```python
+# pip install transformers torch
+from transformers import pipeline
+
+# Sentiment Analysis 情感分析
+classifier = pipeline("sentiment-analysis")
+results = classifier([
+    "This experiment produced fascinating results!",
+    "The participant reported feeling extremely anxious.",
+    "The procedure was straightforward and uneventful.",
+])
+
+for r in results:
+    print(f"  Label: {r['label']}, Score: {r['score']:.4f}")
+```
+
+### 2.2 Text Classification for Research 研究用文本分類
+
+```python
+# Zero-shot classification — no training needed!
+# 零樣本分類 — 不需要訓練！
+zero_shot = pipeline("zero-shot-classification")
+
+text = "The patient has been experiencing persistent sleep difficulties and low mood for three weeks."
+
+# Classify into custom categories 自訂分類類別
+result = zero_shot(
+    text,
+    candidate_labels=["depression", "anxiety", "insomnia", "normal"],
+)
+
+print(f"Text: {text}")
+print(f"Labels:  {result['labels']}")
+print(f"Scores:  {[f'{s:.3f}' for s in result['scores']]}")
+```
+
+### 2.3 Named Entity Recognition (NER) 命名實體辨識
+
+```python
+# Extract entities from clinical notes
+# 從臨床紀錄中擷取實體
+ner = pipeline("ner", aggregation_strategy="simple")
+
+clinical_note = "Patient John Smith, age 45, was referred by Dr. Chen from Taipei General Hospital for cognitive assessment."
+
+entities = ner(clinical_note)
+for entity in entities:
+    print(f"  {entity['word']}: {entity['entity_group']} (score: {entity['score']:.3f})")
+```
+
+---
+
+## 3. Using Pre-trained Models Directly
+## 3. 直接使用預訓練模型
+
+```python
+from transformers import AutoTokenizer, AutoModel
+import torch
+
+# Load a model and tokenizer 載入模型與分詞器
+model_name = "bert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
+
+# Tokenize text 分詞
+text = "Working memory capacity predicts academic performance."
+inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+
+print(f"Tokens: {tokenizer.tokenize(text)}")
+print(f"Input IDs: {inputs['input_ids']}")
+print(f"Attention Mask: {inputs['attention_mask']}")
+
+# Get embeddings 取得嵌入向量
+with torch.no_grad():
+    outputs = model(**inputs)
+    
+# outputs.last_hidden_state: (batch, seq_len, hidden_dim)
+embeddings = outputs.last_hidden_state
+print(f"Embedding shape: {embeddings.shape}")  # (1, token_count, 768)
+
+# Use [CLS] token embedding as sentence representation
+# 使用 [CLS] token 嵌入作為句子表示
+sentence_emb = embeddings[:, 0, :]
+print(f"Sentence embedding shape: {sentence_emb.shape}")  # (1, 768)
+```
+
+---
+
+## 4. Prompt Engineering for Research
+## 4. 研究用的 Prompt Engineering
+
+### 4.1 Effective Prompting Patterns
+
+| Pattern | Example |
+|---------|---------|
+| **Role assignment** | "You are a psychology research assistant..." |
+| **Few-shot** | Provide 2-3 examples before the task |
+| **Chain-of-thought** | "Let's think step by step..." |
+| **Output format** | "Respond in JSON format with keys..." |
+
+### 4.2 Research Applications 研究應用
+
+```python
+# Example: Using an LLM to generate experimental stimuli
+# 範例：使用 LLM 生成實驗刺激材料
+
+# This demonstrates the PROMPT pattern — you would send this to an LLM API
+prompt = """
+You are helping design a psychology experiment on emotional word processing.
+
+Generate 10 pairs of words, where each pair contains:
+1. A neutral word
+2. An emotionally valenced word (positive or negative) matched for:
+   - Word length (± 1 character)
+   - Word frequency (common everyday words)
+
+Format as a table with columns: Neutral, Emotional, Valence, Length_N, Length_E
+
+Example:
+| Neutral | Emotional | Valence  | Length_N | Length_E |
+|---------|-----------|----------|----------|----------|
+| table   | happy     | positive | 5        | 5        |
+"""
+
+print(prompt)
+# In practice, send to: openai.chat.completions.create() or similar API
+```
+
+---
+
+## 5. Lab: Sentiment Analysis Pipeline
+## 5. 實作：情感分析管道
+
+### Task 任務
+
+1. Prepare a list of 20+ sentences (mix of positive, negative, neutral — related to research participant feedback)
+2. Use the Hugging Face `pipeline("sentiment-analysis")` to classify each sentence
+3. Try `zero-shot-classification` with custom labels relevant to your research
+4. Compare the two approaches — which is more flexible? More accurate?
+5. **Bonus**: Use `AutoTokenizer` and `AutoModelForSequenceClassification` to manually tokenize and predict, inspecting the intermediate outputs
+
+---
+
+## References 參考資料
+
+- **Hugging Face Documentation**: [https://huggingface.co/docs/transformers/](https://huggingface.co/docs/transformers/)
+- **Attention Is All You Need**: Vaswani et al. (2017), *Advances in NeurIPS*, 30
+- **BERT Paper**: Devlin et al. (2019), *NAACL-HLT*
+- **Prompt Engineering Guide**: [https://www.promptingguide.ai/](https://www.promptingguide.ai/)
+- **Hugging Face Course**: [https://huggingface.co/course/](https://huggingface.co/course/)

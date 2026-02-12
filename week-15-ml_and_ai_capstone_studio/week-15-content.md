@@ -1,3 +1,193 @@
-# Week 15: ML & AI Capstone Studio\n# 第十五週：機器學習與人工智慧專題工作室\n\n> **Date 日期**: 2026/06/04  \n> **Topic 主題**: Guided Development / Hackathon 引導開發／黑客松\n\n---\n\n## Learning Objectives 學習目標\n\n1. 整合課程所學的機器學習、深度學習和自然語言處理技能，應用於實際專案。\n2. 掌握專案開發生命週期，從問題定義、資料探索到模型部署的關鍵步驟。\n3. 學習有效的專案管理和協作技巧，特別是版本控制與團隊合作。\n4. 提升程式碼除錯 (Debugging) 和優化 (Optimization) 的能力。\n5. 準備並完善最終專題的海報展示內容與程式碼庫。\n\n---\n\n## 1. The Capstone Project Lifecycle 專題專案生命週期\n\n「機器學習與人工智慧專題工作室」旨在引導學生將前幾週所學的知識融會貫通，應用於一個完整的專案。一個典型的 ML/AI 專案生命週期包括以下階段：\n\n1.  **問題定義與目標設定 (Problem Definition & Goal Setting)**:\n    -   清晰定義研究問題或商業目標。\n    -   確定輸入資料、預期輸出和成功的評估指標。\n2.  **資料收集與探索 (Data Collection & Exploration)**:\n    -   識別、收集相關數據。\n    -   進行探索性資料分析 (EDA)，理解資料分佈、關係和潛在問題。\n3.  **資料預處理與特徵工程 (Data Preprocessing & Feature Engineering)**:\n    -   清理、轉換和標準化資料。\n    -   創造新特徵以提升模型性能。\n4.  **模型選擇與訓練 (Model Selection & Training)**:\n    -   根據問題類型選擇合適的機器學習或深度學習模型。\n    -   訓練模型，並進行超參數調優。\n5.  **模型評估與迭代 (Model Evaluation & Iteration)**:\n    -   使用獨立的測試集評估模型性能。\n    -   根據評估結果，回溯調整模型、特徵或預處理步驟。\n6.  **模型部署與監控 (Model Deployment & Monitoring)**:\n    -   將訓練好的模型整合到應用程式或服務中。\n    -   持續監控模型性能，確保其在實際環境中保持有效。\n\n**心理學研究中的重要性**: 完整的專案生命週期確保研究從假設、數據收集、分析到結論的每一步都嚴謹且可追溯，是實現「可重複科學」的基礎。\n\n---\n\n## 2. Integrating Course Skills 整合課程技能\n\n本週專題工作室是將所有習得技能結合起來的機會。\n\n-   **Python 基礎與科學計算**: 使用 NumPy、Pandas 進行資料處理和數值運算。\n-   **行為實驗設計**: 如果專案涉及生成新數據，應用 PsychoPy 知識來設計實驗範式。\n-   **資料視覺化與統計分析**: 使用 Matplotlib、Seaborn 呈現資料洞察和模型結果。\n-   **機器學習演算法**: 應用 `scikit-learn` 中的迴歸、分類、聚類、降維模型。\n-   **深度學習**: 使用 TensorFlow/Keras 或 PyTorch 構建神經網路 (MLP, CNN) 解決複雜問題。\n-   **GPU 加速**: 利用 Colab 或本地 GPU 加速深度學習模型的訓練。\n-   **大型語言模型 (LLMs)**: 使用 Hugging Face `transformers` 進行文本生成、情感分析或問答，作為專案的一部分。\n-   **可持續程式設計與版本控制**: 運用 Git 和 GitHub 管理專案程式碼，實施模組化設計和清晰的程式碼註釋。\n\n```python\n# Conceptual code demonstrating skill integration\n# 概念性程式碼展示技能整合\n\n# 1. Data Generation / Loading (e.g., from PsychoPy or a CSV)\n# import pandas as pd\n# df = pd.read_csv(\'experimental_data.csv\')\n\n# 2. Preprocessing (using scikit-learn pipeline)\n# from sklearn.compose import ColumnTransformer\n# from sklearn.preprocessing import StandardScaler, OneHotEncoder\n# preprocessor = ColumnTransformer(transformers=[...])\n\n# 3. Model Training (e.g., a Deep Learning model with TensorFlow)\n# import tensorflow as tf\n# from tensorflow.keras import layers\n# model = tf.keras.Sequential([\n#     layers.Dense(64, activation=\'relu\'),\n#     layers.Dense(1, activation=\'sigmoid\')\n# ])\n# model.compile(optimizer=\'adam\', loss=\'binary_crossentropy\', metrics=[\'accuracy\'])\n# model.fit(X_train_processed, y_train, epochs=10)\n\n# 4. Evaluation & Visualization\n# import matplotlib.pyplot as plt\n# import seaborn as sns\n# sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt=\'d\')\n# plt.title(\'Confusion Matrix\')\n# plt.show()\n\n# 5. Optional: LLM integration for text analysis\n# from transformers import pipeline\n# sentiment_pipeline = pipeline(\"sentiment-analysis\")\n# result = sentiment_pipeline(\"This is a very positive statement.\")\n\nprint(\"This section outlines the integration of various skills into a cohesive project.\")\nprint(\"實際專案中，您會將上述概念的程式碼片段組合起來。\")\n```\n\n---\n\n## 3. Project Development Guidelines 專案開發指南\n\n為確保專案成功並為期末展示做好準備，請遵循以下指南：\n\n### 3.1 專案管理與協作 Project Management & Collaboration\n\n-   **版本控制 (Git/GitHub)**: 專案的所有程式碼都必須在 GitHub 上進行版本控制。定期 `commit` 並 `push` 您的更改。\n-   **Issue Tracking**: 使用 GitHub Issues 或其他工具來追蹤任務、錯誤和功能請求。\n-   **Code Review**: 與同學進行程式碼互審，提供和接受建設性反饋。\n\n```bash\n# Basic Git commands for project management\n# 專案管理的基本 Git 命令\ncd /path/to/your/project/repo\n\n# Initialize a new Git repository (if not already done)\n# git init \n\n# Add all changes to staging area\ngit add .\n\n# Commit changes with a descriptive message\ngit commit -m \"feat: Implement initial data preprocessing pipeline\"\n\n# Push changes to GitHub (assuming you have a remote named 'origin')\ngit push origin main\n\n# Create a new branch for a new feature or bug fix\n# git checkout -b feature/new-analysis\n\n# Switch back to main branch\n# git checkout main\n\n# Merge a feature branch into main (after review)\n# git merge feature/new-analysis\n\nprint(\"Git commands are crucial for collaborative project development.\")\n```\n\n### 3.2 程式碼質量與文檔 Code Quality & Documentation\n\n-   **清潔程式碼 (Clean Code)**: 撰寫易於理解、維護和擴展的程式碼。使用有意義的變數名、函數名。\n-   **模組化設計 (Modular Design)**: 將程式碼組織成小的、獨立的函數和模組，提高可重用性。\n-   **註釋與文檔 (Comments & Documentation)**: 關鍵程式碼段和所有函數都應有清晰的註釋和 Docstrings，解釋其功能、參數和返回值。\n-   **PEP 8 規範**: 遵循 Python 的程式碼風格指南，提高可讀性。\n\n```python\n# Example of good code documentation\n# 良好程式碼文檔的範例\ndef calculate_average_rt(reaction_times: list[float]) -> float:\n    \"\"\"\n    計算給定反應時間列表的平均值。\n    Calculate the average of a list of reaction times.\n\n    Parameters\n    ----------\n    reaction_times : list[float]\n        A list of reaction times in milliseconds.\n\n    Returns\n    -------\n    float\n        The average reaction time.\n\n    Raises\n    ------\n    ValueError\n        If the input list is empty.\n    \"\"\"\n    if not reaction_times:\n        raise ValueError(\"Reaction time list cannot be empty.\")\n    return sum(reaction_times) / len(reaction_times)\n\n# Example usage 範例使用\ntrs = [450, 520, 380, 490]\nprint(f\"Average RT: {calculate_average_rt(trs):.2f}ms\")\n\n```\n\n### 3.3 除錯與優化 Debugging & Optimization\n\n-   **逐步除錯**: 使用 VS Code 的除錯器 (Debugger) 來逐行執行程式碼，檢查變數狀態。\n-   **日誌記錄 (Logging)**: 使用 `logging` 模組記錄程式的運行狀態和潛在問題。\n-   **性能分析 (Profiling)**: 對於運行緩慢的程式碼，使用 `cProfile` 等工具找出性能瓶頸。\n\n**工作室活動**: 本週課程將以「黑客松」(Hackathon) 形式進行，講師將作為技術顧問，為學生提供即時的程式碼除錯和模型優化建議。學生將與同伴進行程式碼互審。\n\n---\n\n## 4. Lab Activity: Capstone Project Work Session\n## 4. 實作活動：專題專案工作坊\n\n**目標**: 學生在課堂上實際推進其期末專題專案，並獲得講師和同儕的即時反饋。
+# Week 15: ML & AI Capstone Studio
+# 第十五週：機器學習與 AI 專題工作坊
 
-**Goal**: Students actively work on their final capstone projects during class, receiving immediate feedback from the instructor and peers.\n\n### 任務 Task\n\n1.  **專案進度匯報 (Project Check-in)**: 簡要說明您專案的目前進度、遇到的挑戰以及接下來的計劃 (5-10 分鐘)。\n2.  **程式碼互審 (Peer Code Review)**: 與一位同學交換專案程式碼，互相提供關於程式碼品質、邏輯和文檔的建設性反饋。\n3.  **講師諮詢 (Instructor Consultation)**: 利用課堂時間與講師討論您的專案，尋求技術指導、除錯協助或模型優化建議。\n4.  ** Git 操作練習**: 確保您的專案程式碼已正確提交並推送到 GitHub。練習創建分支、合併等操作。\n\n**期待成果 (Expected Outcomes):**\n-   專案的至少一個核心功能模組 (如資料預處理、模型訓練) 完成原型開發。\n-   程式碼庫已初始化並在 GitHub 上進行版本控制。\n-   對專案中遇到的具體技術問題有更清晰的解決方案。\n-   獲得了來自同儕和講師的寶貴反饋。\n\n```python\n# No specific code example for this lab, as it's a work session.\n# The focus is on applying previously learned skills to individual projects.\n# This space is for students to document their progress and issues.\n\nprint(\"During this lab, students will be actively working on their projects.\")\nprint(\"重點是將先前學到的技能應用於個人專案。\")\n```\n\n---\n\n## 5. References 參考資料\n\n- **Project Management for Data Scientists**: [https://www.oreilly.com/library/view/doing-data-science/9781449363872/ch01.html](https://www.oreilly.com/library/view/doing-data-science/9781449363872/ch01.html)\n- **The Pragmatic Programmer**: Hunt, A., & Thomas, D. (1999). *The Pragmatic Programmer: From Journeyman to Master*. Addison-Wesley Professional.\n- **Clean Code**: Martin, R. C. (2008). *Clean Code: A Handbook of Agile Software Craftsmanship*. Prentice Hall.\n- **Git Handbook**: [https://guides.github.com/introduction/git-handbook/](https://guides.github.com/introduction/git-handbook/)\n- **MLOps Best Practices**: [https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning)\n
+> **Date 日期**: 2026/06/04  
+> **Activity 活動**: Guided Development / Hackathon 引導式開發 / 黑客松
+
+---
+
+## Learning Objectives 學習目標
+
+1. 整合本學期所學的程式設計、實驗設計與 ML/AI 技能
+2. 進行同儕程式碼審查 (Peer Code Review)
+3. 在限時內完成一個從資料到模型的完整 ML pipeline
+4. 練習技術溝通與團隊協作
+
+---
+
+## 1. Capstone Project Guidelines
+## 1. 專題計畫指引
+
+### 1.1 Project Scope 專題範圍
+
+Your final project should demonstrate integration of skills from both modules:
+
+您的期末專題應展示兩個模組所學技能的整合：
+
+| Module 1 (Weeks 1–8) | Module 2 (Weeks 9–14) |
+|:---|:---|
+| PsychoPy experiment design | ML classification/regression |
+| Data collection & logging | Feature engineering |
+| Statistical analysis | Model evaluation |
+| Clean code & Git | Deep learning or NLP |
+
+### 1.2 Project Types 專題類型
+
+Choose one of the following approaches:
+
+| Type | Description | Example |
+|------|-------------|---------|
+| **Full Pipeline** | Design experiment → collect data → ML analysis | Stroop task → predict errors with RF |
+| **ML Analysis** | Use an existing psychology dataset with ML | Apply NLP sentiment analysis to survey data |
+| **Tool Building** | Build a useful tool for psychology research | Auto stimulus generator using LLM |
+
+### 1.3 Required Components 必要元件
+
+```
+your-project/
+├── README.md              # Project description, how to run
+├── requirements.txt       # Python dependencies
+├── data/                  # Raw and processed data
+│   ├── raw/
+│   └── processed/
+├── src/                   # Source code
+│   ├── experiment.py      # PsychoPy experiment (if applicable)
+│   ├── preprocess.py      # Data cleaning & feature engineering
+│   ├── model.py           # ML model training & evaluation
+│   └── visualize.py       # Result visualization
+├── notebooks/             # Exploratory analysis
+│   └── analysis.ipynb
+└── results/               # Output figures and reports
+    ├── figures/
+    └── metrics.json
+```
+
+---
+
+## 2. Hackathon Structure 黑客松流程
+
+### Timeline 時程表
+
+| Time | Activity |
+|------|----------|
+| 0:00–0:15 | Instructor check-in — goals for today |
+| 0:15–1:00 | Sprint 1 — Core development |
+| 1:00–1:15 | **Peer code review** (pair up with a partner) |
+| 1:15–2:00 | Sprint 2 — Refinement & debugging |
+| 2:00–2:30 | Sprint 3 — Visualization & documentation |
+| 2:30–2:50 | Lightning demos (2 min each) |
+
+---
+
+## 3. Peer Code Review Guidelines
+## 3. 同儕程式碼審查指引
+
+### 3.1 What to Look For 審查重點
+
+```markdown
+## Code Review Checklist 程式碼審查清單
+
+### Correctness 正確性
+- [ ] Does the code run without errors? 程式碼是否能正確執行？
+- [ ] Are train/test splits done before any preprocessing? 訓練/測試分割是否在預處理之前？
+- [ ] Is there data leakage? 是否有資料洩漏？
+
+### Readability 可讀性
+- [ ] Are variable names descriptive? 變數名稱是否有描述性？
+- [ ] Are functions documented with docstrings? 函數是否有文件字串？
+- [ ] Is the code modular (not one giant script)? 程式碼是否模組化？
+
+### Reproducibility 可再現性
+- [ ] Are random seeds set? 是否設定了隨機種子？
+- [ ] Is there a requirements.txt? 是否有 requirements.txt？
+- [ ] Can someone else run this from the README? 其他人能依照 README 執行嗎？
+
+### Analysis 分析
+- [ ] Are evaluation metrics appropriate? 評估指標是否適當？
+- [ ] Are results visualized clearly? 結果是否清楚地視覺化？
+- [ ] Are conclusions supported by the data? 結論是否有資料支持？
+```
+
+### 3.2 Giving Feedback 給予反饋
+
+**Good feedback is:**
+- **Specific**: "Line 45: `accuracy` isn't meaningful for imbalanced classes — consider `roc_auc`"
+- **Constructive**: "Consider using `sklearn.pipeline` to avoid data leakage in preprocessing"
+- **Kind**: "Great job structuring the code into functions! One suggestion..."
+
+---
+
+## 4. Common Pitfalls 常見陷阱
+
+### 4.1 Data Leakage 資料洩漏
+
+```python
+# ❌ WRONG: Fitting scaler on ALL data before splitting
+# ❌ 錯誤：在分割之前對所有資料擬合縮放器
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)           # Leakage!
+X_train, X_test = train_test_split(X_scaled)
+
+# ✅ CORRECT: Fit scaler only on training data
+# ✅ 正確：只在訓練資料上擬合縮放器
+X_train, X_test = train_test_split(X)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)  # Fit on train
+X_test_scaled = scaler.transform(X_test)         # Transform test
+```
+
+### 4.2 Using a Pipeline to Prevent Leakage
+
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+# Pipeline ensures preprocessing is fit ONLY on training folds
+# Pipeline 確保預處理只在訓練折上擬合
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model', RandomForestClassifier(random_state=42))
+])
+
+# Cross-validation handles splitting correctly
+scores = cross_val_score(pipe, X, y, cv=5, scoring='accuracy')
+print(f"CV Accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+```
+
+---
+
+## 5. Quick Reference: Model Selection
+## 5. 快速參考：模型選擇
+
+| Task | Data Size | Recommended Model |
+|------|-----------|-------------------|
+| Binary classification, small | < 1K samples | Logistic Regression, SVM |
+| Binary classification, large | > 10K samples | Random Forest, XGBoost |
+| Multi-class, tabular | Any | Random Forest, XGBoost |
+| Image classification | Any | CNN (PyTorch) |
+| Text classification | Any | Hugging Face Transformers |
+| Clustering (no labels) | Any | K-Means, DBSCAN |
+| Dimensionality reduction | High-dim | PCA, t-SNE |
+
+---
+
+## 6. Lab: Capstone Sprint
+## 6. 實作：專題衝刺
+
+### Today's Goals 今日目標
+
+1. **Define** your final project scope (Type + dataset + model)
+2. **Code** the core pipeline (preprocess → train → evaluate)
+3. **Review** a partner's code using the checklist above
+4. **Document** your README.md with clear instructions
+
+---
+
+## References 參考資料
+
+- **Scikit-learn Pipelines**: [https://scikit-learn.org/stable/modules/compose.html](https://scikit-learn.org/stable/modules/compose.html)
+- **Data Leakage in ML**: [https://machinelearningmastery.com/data-leakage-machine-learning/](https://machinelearningmastery.com/data-leakage-machine-learning/)
+- **Code Review Best Practices**: [https://google.github.io/eng-practices/review/](https://google.github.io/eng-practices/review/)
+- **Project Structure**: [https://drivendata.github.io/cookiecutter-data-science/](https://drivendata.github.io/cookiecutter-data-science/)
