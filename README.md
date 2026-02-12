@@ -23,62 +23,69 @@
 ### Week 01: Orientation Python Environment Setup And Basic Libraries
 **Folder:** `/week-01-orientation_python_environment_setup_and_basic_libraries`
 
-| File                                      | Description            |
-| ----------------------------------------- | ---------------------- |
-| `Karpathy_2026_Claude_Coding_Notes.html`  | File                   |
-| `Karpathy_2026_Claude_Coding_Notes.qmd`   | File                   |
-| `Karpathy_2026_Claude_Coding_Notes_files` | File                   |
-| `week-01-README.md`                       | Markdown Documentation |
-| `week-01-environment_setup_guide.ipynb`   | Jupyter Notebook       |
+| File                                      | Description                          |
+| ----------------------------------------- | ------------------------------------ |
+| `week-01-content.md`                      | **Comprehensive lecture notes**      |
+| `week-01-README.md`                       | Environment setup guide (Chinese)    |
+| `week-01-environment_setup_guide.ipynb`   | Quick-start Jupyter Notebook         |
+| `Karpathy_2026_Claude_Coding_Notes.md`    | Supplementary reading                |
+| `install_psychopy_env.ps1`                | Windows install script               |
 
 ### Week 02: Psychopy Coder And Stimulus Presentation
 **Folder:** `/week-02-psychopy_coder_and_stimulus_presentation`
 
-| File                                                         | Description      |
-| ------------------------------------------------------------ | ---------------- |
-| `week_02_the_precise_stimulus_psychopy_basics_content.ipynb` | Jupyter Notebook |
+| File                                                         | Description                     |
+| ------------------------------------------------------------ | ------------------------------- |
+| `week-02-content.md`                                         | **Comprehensive lecture notes** |
+| `week_02_the_precise_stimulus_psychopy_basics_content.ipynb` | Demo Jupyter Notebook           |
 
 ### Week 03: Interaction And The Event Loop
 **Folder:** `/week-03-interaction_and_the_event_loop`
 
-| File                                                   | Description      |
-| ------------------------------------------------------ | ---------------- |
-| `week_03_interaction_and_the_event_loop_content.ipynb` | Jupyter Notebook |
+| File                                                   | Description                     |
+| ------------------------------------------------------ | ------------------------------- |
+| `week-03-content.md`                                   | **Comprehensive lecture notes** |
+| `week_03_interaction_and_the_event_loop_content.ipynb` | Demo Jupyter Notebook           |
 
 ### Week 04: Psychopy Builder Online Paradigms And Adaptive Design
 **Folder:** `/week-04-psychopy_builder_online_paradigms_and_adaptive_design`
 
-| File                                                           | Description      |
-| -------------------------------------------------------------- | ---------------- |
-| `week_04_advanced_paradigms_online_and_adaptive_content.ipynb` | Jupyter Notebook |
+| File                                                           | Description                     |
+| -------------------------------------------------------------- | ------------------------------- |
+| `week-04-content.md`                                           | **Comprehensive lecture notes** |
+| `week_04_advanced_paradigms_online_and_adaptive_content.ipynb` | Demo Jupyter Notebook           |
 
 ### Week 05: Statistical Analysis And Data Visualization
 **Folder:** `/week-05-statistical_analysis_and_data_visualization`
 
-| File                                                           | Description      |
-| -------------------------------------------------------------- | ---------------- |
-| `week_05_intro_to_neural_data_bids_and_fmriprep_content.ipynb` | Jupyter Notebook |
+| File                                                           | Description                     |
+| -------------------------------------------------------------- | ------------------------------- |
+| `week-05-content.md`                                           | **Comprehensive lecture notes** |
+| `week_05_intro_to_neural_data_bids_and_fmriprep_content.ipynb` | Demo Jupyter Notebook           |
 
 ### Week 06: Example Designs
 **Folder:** `/week-06-example_designs`
 
-| File                                                      | Description      |
-| --------------------------------------------------------- | ---------------- |
-| `week_06_signal_extraction_masking_and_roi_content.ipynb` | Jupyter Notebook |
+| File                                                      | Description                     |
+| --------------------------------------------------------- | ------------------------------- |
+| `week-06-content.md`                                      | **Comprehensive lecture notes** |
+| `week_06_signal_extraction_masking_and_roi_content.ipynb` | Demo Jupyter Notebook           |
 
 ### Week 07: Coding With Ai Helpers And Sustainable Programming Practices
 **Folder:** `/week-07-coding_with_ai_helpers_and_sustainable_programming_practices`
 
-| File                                                      | Description      |
-| --------------------------------------------------------- | ---------------- |
-| `week_07_connectivity_and_network_analysis_content.ipynb` | Jupyter Notebook |
+| File                                                      | Description                     |
+| --------------------------------------------------------- | ------------------------------- |
+| `week-07-content.md`                                      | **Comprehensive lecture notes** |
+| `week_07_connectivity_and_network_analysis_content.ipynb` | Demo Jupyter Notebook           |
 
 ### Week 08: Midterm Project Presentation
 **Folder:** `/week-08-midterm_project_presentation`
 
-| File                                    | Description      |
-| --------------------------------------- | ---------------- |
-| `week_08_midterm_project_content.ipynb` | Jupyter Notebook |
+| File                                    | Description                     |
+| --------------------------------------- | ------------------------------- |
+| `week-08-content.md`                    | **Comprehensive lecture notes** |
+| `week_08_midterm_project_content.ipynb` | Demo Jupyter Notebook           |
 
 ### Week 09: Machine Learning Foundations
 **Folder:** `/week-09-machine_learning_foundations`
