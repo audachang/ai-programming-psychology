@@ -1,8 +1,12 @@
-sections/
-materials/
-syllabus*.tex
+
+/textbook/
+/materials/
+/sections/
+weekly_contents.md
+*.pdf
 *.log
+*.tmp
 *.aux
 *.out
-*.synctex.gz
-week-*/*.html
+__pycache__/
+.ipynb_checkpoints/
